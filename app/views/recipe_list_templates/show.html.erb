@@ -1,24 +1,40 @@
-<h1><%= @list.name %></h1>
-<p><a href="/recipe_lists">← My Lists</a></p>
+<a href="/recipe_lists" class="back-link">← My Lists</a>
+<div class="page-header">
+  <h1><%= @list.name %></h1>
+</div>
 
-<form action="/modify_recipe_list/<%= @list.id %>" method="post">
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-  <input type="text" name="query_name" value="<%= @list.name %>" style="width:250px;" required>
-  <button type="submit">Rename</button>
-</form>
-
-<hr>
+<details style="max-width:400px; margin-bottom:var(--space-xl);">
+  <summary>Rename list</summary>
+  <form action="/modify_recipe_list/<%= @list.id %>" method="post" style="display:flex; gap:var(--space-sm);">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <input type="text" name="query_name" value="<%= @list.name %>" class="form-input" style="flex:1;" required>
+    <button type="submit" class="btn btn--primary btn--sm">Rename</button>
+  </form>
+</details>
 
 <% if @items.empty? %>
-  <p>No recipes in this list yet. <a href="/my_book">Browse your book</a> to add some.</p>
-<% end %>
-
-<% @items.each do |item| %>
-  <% recipe = item.recipe %>
-  <article style="border:1px solid #ccc; padding:8px; margin-bottom:8px;">
-    <a href="/recipes/<%= recipe.id %>"><strong><%= recipe.title %></strong></a>
-    <% if recipe.total_time_min %><small> — <%= recipe.total_time_display %></small><% end %>
-    &nbsp;|&nbsp;
-    <a href="/recipe_list_items/<%= item.id %>/remove">Remove from list</a>
-  </article>
+  <div class="empty-state">
+    <p>No recipes in this list yet.</p>
+    <a href="/my_book" class="btn btn--primary">Browse My Book</a>
+  </div>
+<% else %>
+  <div class="book-grid">
+    <% @items.each do |item| %>
+      <% recipe = item.recipe %>
+      <article class="book-item">
+        <% if recipe.photo.attached? %>
+          <%= image_tag url_for(recipe.photo), class: "book-item__thumb" %>
+        <% elsif recipe.photo_url.present? %>
+          <img src="<%= recipe.photo_url %>" class="book-item__thumb" alt="">
+        <% else %>
+          <div class="book-item__thumb-placeholder">🍳</div>
+        <% end %>
+        <div class="book-item__content">
+          <a href="/recipes/<%= recipe.id %>" class="book-item__title"><%= recipe.title %></a>
+          <% if recipe.total_time_min %><span class="text-sm"><%= recipe.total_time_display %></span><% end %>
+        </div>
+        <a href="/recipe_list_items/<%= item.id %>/remove" class="btn btn--ghost btn--sm" style="margin-left:auto; align-self:center; font-size:11px;">Remove</a>
+      </article>
+    <% end %>
+  </div>
 <% end %>

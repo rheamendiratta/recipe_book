@@ -1,29 +1,33 @@
+<a href="/feed" class="back-link">← Feed</a>
 <h1>Share a Food Photo</h1>
-<p><a href="/feed">← Feed</a></p>
 
-<form action="/insert_food_post" method="post" enctype="multipart/form-data">
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-  <div>
-    <label>Upload Photo</label><br>
-    <input type="file" name="photo" accept="image/*">
-  </div>
-  <div>
-    <label>Or Photo URL</label><br>
-    <input type="url" name="query_photo_url" style="width:400px;" placeholder="https://...">
-  </div>
-  <div>
-    <label>Caption *</label><br>
-    <textarea name="query_caption" rows="3" style="width:400px;" required placeholder="What did you cook?"></textarea>
-  </div>
-  <div>
-    <label>Link to a recipe (optional)</label><br>
-    <select name="query_recipe_id">
-      <option value="">-- No recipe --</option>
-      <% @my_book_recipes.each do |recipe| %>
-        <option value="<%= recipe.id %>"><%= recipe.title %></option>
-      <% end %>
-    </select>
-  </div>
-  <br>
-  <button type="submit">Share</button>
-</form>
+<div class="card" style="max-width:540px;">
+  <form action="/insert_food_post" method="post" enctype="multipart/form-data">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <div class="form-group">
+      <label class="form-label">Upload Photo</label>
+      <input type="file" name="photo" accept="image/*">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Or Photo URL</label>
+      <input type="url" name="query_photo_url" class="form-input" placeholder="https://…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Caption <span style="color:var(--error)">*</span></label>
+      <textarea name="query_caption" class="form-textarea" required placeholder="What did you cook?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Link to a recipe (optional)</label>
+      <select name="query_recipe_id" class="form-select">
+        <option value="">— No recipe —</option>
+        <% @my_book_recipes.each do |recipe| %>
+          <option value="<%= recipe.id %>"><%= recipe.title %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary">Share</button>
+      <a href="/feed" class="btn btn--secondary">Cancel</a>
+    </div>
+  </form>
+</div>

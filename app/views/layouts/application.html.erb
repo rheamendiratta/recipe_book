@@ -1,43 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Recipe Book</title>
+    <title>Rasoi Ghar</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
   <body>
-    <nav>
-      <strong><a href="/">Recipe Book</a></strong>
-      &nbsp;|&nbsp;
-      <% if user_signed_in? %>
-        <a href="/feed">Feed</a> |
-        <a href="/my_book">My Book</a> |
-        <a href="/recipe_lists">My Lists</a> |
-        <a href="/friends">Friends</a> |
-        <a href="/users">Find People</a> |
-        <a href="/recipes/new">+ New Recipe</a> |
-        <a href="/recipes/import">+ Import</a> |
-        <a href="/posts/new">+ Post Photo</a>
-        &nbsp;&nbsp;
-        <em><%= current_user.display %></em> |
-        <%= link_to "Sign out", destroy_user_session_path %>
-      <% else %>
-        <%= link_to "Sign in", new_user_session_path %> |
-        <%= link_to "Sign up", new_user_registration_path %>
-      <% end %>
+    <nav class="site-nav">
+      <div class="site-nav__inner">
+        <a href="/" class="site-nav__brand">Rasoi Ghar</a>
+        <div class="site-nav__links">
+          <% if user_signed_in? %>
+            <a href="/feed" class="site-nav__link">Feed</a>
+            <a href="/my_book" class="site-nav__link">My Book</a>
+            <a href="/recipe_lists" class="site-nav__link">Lists</a>
+            <a href="/friends" class="site-nav__link">Friends</a>
+            <a href="/users" class="site-nav__link">Find People</a>
+          <% end %>
+        </div>
+        <div class="site-nav__actions">
+          <% if user_signed_in? %>
+            <a href="/recipes/new" class="btn btn--sm btn--primary">+ New Recipe</a>
+            <a href="/recipes/import" class="btn btn--sm btn--secondary">Import</a>
+            <a href="/posts/new" class="btn btn--sm btn--secondary">+ Post</a>
+            <span class="site-nav__user"><%= current_user.display %></span>
+            <%= link_to "Sign out", destroy_user_session_path, class: "site-nav__link" %>
+          <% else %>
+            <%= link_to "Sign in", new_user_session_path, class: "btn btn--sm btn--primary" %>
+            <%= link_to "Sign up", new_user_registration_path, class: "btn btn--sm btn--secondary" %>
+          <% end %>
+        </div>
+      </div>
     </nav>
-    <hr>
 
-    <% if notice %>
-      <p style="color:green"><strong><%= notice %></strong></p>
-    <% end %>
-    <% if alert %>
-      <p style="color:red"><strong><%= alert %></strong></p>
-    <% end %>
+    <main class="main-container">
+      <% if notice %>
+        <div class="flash flash--success"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="flash flash--error"><%= alert %></div>
+      <% end %>
 
-    <%= yield %>
+      <%= yield %>
+    </main>
   </body>
 </html>

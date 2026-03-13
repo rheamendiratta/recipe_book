@@ -2,379 +2,357 @@
   <meta name="turbo-cache-control" content="no-cache">
 <% end %>
 
-<p><a href="/my_book">← My Book</a></p>
+<a href="/my_book" class="back-link">← My Book</a>
 
 <% is_creator = @recipe.creator_id == current_user.id %>
 <% in_book = @entry.present? %>
 
+<%# Hero photo %>
 <% if @recipe.photo.attached? %>
-  <%= image_tag url_for(@recipe.photo), style: "max-width:500px; display:block;" %>
+  <%= image_tag url_for(@recipe.photo), class: "card__photo card__photo--hero" %>
 <% elsif @recipe.photo_url.present? %>
-  <img src="<%= @recipe.photo_url %>" style="max-width:500px; display:block;" alt="recipe photo">
+  <img src="<%= @recipe.photo_url %>" class="card__photo card__photo--hero" alt="<%= @recipe.title %>">
 <% end %>
 
-<h1><%= @recipe.title %></h1>
+<div class="page-header">
+  <h1><%= @recipe.title %></h1>
+  <div class="action-row">
+    <a href="/recipes/<%= @recipe.id %>/cook" class="btn btn--primary">Follow Recipe</a>
+    <% if in_book %>
+      <span class="badge badge--entry"><%= @entry.entry_type %></span>
+    <% else %>
+      <form action="/recipes/<%= @recipe.id %>/save_to_book" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" class="btn btn--secondary">Save to My Book</button>
+      </form>
+    <% end %>
+    <% unless is_creator %>
+      <form action="/recipes/<%= @recipe.id %>/duplicate" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" class="btn btn--secondary">Duplicate to My Book</button>
+      </form>
+    <% end %>
+    <% if is_creator %>
+      <form action="/recipes/<%= @recipe.id %>/duplicate" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" class="btn btn--secondary">Duplicate</button>
+      </form>
+      <a href="/delete_recipe/<%= @recipe.id %>" class="btn btn--destructive btn--sm" data-turbo-confirm="Delete this recipe permanently?">Delete</a>
+    <% end %>
+  </div>
+</div>
 
-<p>
+<p style="color:var(--text-secondary); font-size:14px; margin-bottom:var(--space-md);">
   By <a href="/users/<%= @recipe.creator_id %>"><%= @recipe.creator.display %></a>
   <% if @recipe.original_recipe_id.present? %>
-    &nbsp;(originally from <a href="/recipes/<%= @recipe.original_recipe_id %>">another recipe</a>)
+    &nbsp;&mdash; duplicated from <a href="/recipes/<%= @recipe.original_recipe_id %>">original recipe</a>
   <% end %>
 </p>
 
-<p>
-  <% if @recipe.meal_type.present? %><strong><%= @recipe.meal_type_label %></strong> &bull; <% end %>
-  <% if @recipe.diet_type.present? %><span><%= @recipe.diet_type_label %></span> &bull; <% end %>
-  <% if @recipe.base_servings.present? %><%= @recipe.base_servings %> servings<% end %>
-</p>
+<div class="recipe-meta">
+  <% if @recipe.total_time_min.present? %><span class="recipe-meta__item">⏱ <%= @recipe.total_time_display %></span><% end %>
+  <% if @recipe.prep_time_min.present? %><span class="recipe-meta__item">Prep <%= @recipe.prep_time_min %> min</span><% end %>
+  <% if @recipe.cook_time_min.present? %><span class="recipe-meta__item">Cook <%= @recipe.cook_time_min %> min</span><% end %>
+  <% if @recipe.base_servings.present? %><span class="recipe-meta__item"><%= @recipe.base_servings %> servings</span><% end %>
+  <% if @recipe.meal_type.present? %><span class="recipe-meta__item"><%= @recipe.meal_type_label %></span><% end %>
+  <%= render partial: "shared/diet_badge", locals: { diet_type: @recipe.diet_type } if @recipe.diet_type.present? %>
+</div>
 
-<% if @recipe.prep_time_min || @recipe.cook_time_min || @recipe.total_time_min %>
-  <p>
-    <% if @recipe.prep_time_min %><strong>Prep:</strong> <%= @recipe.prep_time_min %> min &nbsp;<% end %>
-    <% if @recipe.cook_time_min %><strong>Cook:</strong> <%= @recipe.cook_time_min %> min &nbsp;<% end %>
-    <% if @recipe.total_time_min %><strong>Total:</strong> <%= @recipe.total_time_display %><% end %>
-  </p>
+<% if @recipe.description.present? %>
+  <p style="color:var(--text-secondary); margin-bottom:var(--space-lg);"><%= @recipe.description %></p>
 <% end %>
 
 <% if @recipe.source_url.present? %>
-  <p><small>Source: <a href="<%= @recipe.source_url %>" target="_blank"><%= @recipe.source_url %></a></small></p>
+  <p class="text-sm" style="margin-bottom:var(--space-lg);">Source: <a href="<%= @recipe.source_url %>" target="_blank"><%= @recipe.source_url.truncate(60) %></a></p>
 <% end %>
-
-<% if @recipe.description.present? %>
-  <p><%= @recipe.description %></p>
-<% end %>
-
-<%# Actions %>
-<p>
-  <a href="/recipes/<%= @recipe.id %>/cook">Follow this recipe (adjust servings)</a>
-  <% if in_book %>
-    &nbsp;|&nbsp;
-    <% if @entry.entry_type == "owned" %>
-      This is your recipe
-    <% elsif @entry.entry_type == "saved" %>
-      Saved to your book
-    <% elsif @entry.entry_type == "duplicated" %>
-      In your book (your version)
-    <% end %>
-  <% end %>
-  <% unless in_book %>
-    &nbsp;|&nbsp;
-    <form action="/recipes/<%= @recipe.id %>/save_to_book" method="post" style="display:inline">
-      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <button type="submit">Save to My Book</button>
-    </form>
-  <% end %>
-  <% unless is_creator %>
-    &nbsp;|&nbsp;
-    <form action="/recipes/<%= @recipe.id %>/duplicate" method="post" style="display:inline">
-      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <button type="submit">Duplicate to My Book</button>
-    </form>
-  <% end %>
-  <% if is_creator %>
-    &nbsp;|&nbsp;
-    <form action="/recipes/<%= @recipe.id %>/duplicate" method="post" style="display:inline">
-      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <button type="submit">Duplicate (create modified version)</button>
-    </form>
-    &nbsp;|&nbsp;
-    <a href="/delete_recipe/<%= @recipe.id %>" data-turbo-confirm="Delete this recipe permanently?">Delete Recipe</a>
-  <% end %>
-</p>
 
 <%# Add to list %>
 <% if in_book && @lists.any? %>
-  <form action="" method="post" style="display:inline">
+  <form action="" method="post" style="display:flex; gap:var(--space-sm); align-items:center; margin-bottom:var(--space-lg);">
     <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-    <label>Add to list:</label>
-    <select name="list_id" id="list_select">
+    <label class="form-label" style="margin:0; white-space:nowrap;">Add to list:</label>
+    <select name="list_id" id="list_select" class="form-select" style="width:auto;">
       <% @lists.each do |list| %>
         <option value="<%= list.id %>"><%= list.name %></option>
       <% end %>
     </select>
-    <button type="submit" id="add_to_list_btn" onclick="this.form.action='/recipe_lists/' + document.getElementById('list_select').value + '/add/<%= @recipe.id %>'">Add to List</button>
+    <button type="submit" class="btn btn--secondary btn--sm" id="add_to_list_btn" onclick="this.form.action='/recipe_lists/' + document.getElementById('list_select').value + '/add/<%= @recipe.id %>'">Add</button>
   </form>
 <% end %>
 
 <hr>
 
-<%# Cooked + Rating (if in book) %>
+<%# My status (cooked + rating) %>
 <% if @entry %>
-  <h3>My Status</h3>
-  <% if @entry.has_cooked %>
-    <p>You have cooked this. ✓</p>
-  <% else %>
-    <p>Not cooked yet.</p>
-    <form action="/book_entry/<%= @entry.id %>/mark_cooked" method="post" style="display:inline">
+  <div class="section-divider">My Status</div>
+  <div class="status-card" style="display:flex; flex-wrap:wrap; gap:var(--space-lg); align-items:center;">
+    <div>
+      <% if @entry.has_cooked %>
+        <span style="color:var(--success); font-weight:600; font-family:var(--font-ui);">✓ Cooked</span>
+      <% else %>
+        <span style="color:var(--text-tertiary); font-family:var(--font-ui); font-size:14px;">Not cooked yet</span>
+        <form action="/book_entry/<%= @entry.id %>/mark_cooked" method="post" style="display:inline; margin-left:var(--space-sm);">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="btn btn--secondary btn--sm">Mark as Cooked</button>
+        </form>
+      <% end %>
+    </div>
+    <form action="/book_entry/<%= @entry.id %>/rate" method="post" class="rating-form">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <button type="submit">Mark as Cooked</button>
+      <span style="font-family:var(--font-ui); font-size:13px; color:var(--text-secondary);">Rating:</span>
+      <% (1..5).each do |n| %>
+        <input type="radio" name="star_rating" value="<%= n %>" id="star_<%= n %>" <%= "checked" if @entry.star_rating == n %>>
+        <label for="star_<%= n %>" class="star-label">★</label>
+      <% end %>
+      <button type="submit" class="btn btn--secondary btn--sm">Save</button>
     </form>
-  <% end %>
-  <form action="/book_entry/<%= @entry.id %>/rate" method="post">
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-    <label>My Rating:</label>
-    <% (1..5).each do |n| %>
-      <label>
-        <input type="radio" name="star_rating" value="<%= n %>" <%= "checked" if @entry.star_rating == n %>>
-        <%= n %>★
-      </label>
-    <% end %>
-    <button type="submit">Save Rating</button>
-  </form>
+  </div>
 <% end %>
-
-<hr>
 
 <%# Nutrition %>
 <% if @recipe.est_calories_per_serving.present? %>
-  <h3>Nutrition (per serving)</h3>
-  <table border="1" cellpadding="4">
-    <tr>
-      <th>Calories</th><th>Carbs</th><th>Fat</th><th>Protein</th><th>Fibre</th>
-    </tr>
-    <tr>
-      <td><%= @recipe.est_calories_per_serving.round(1) %> kcal</td>
-      <td><%= @recipe.est_carbs_g_per_serving.round(1) %>g</td>
-      <td><%= @recipe.est_fat_g_per_serving.round(1) %>g</td>
-      <td><%= @recipe.est_protein_g_per_serving.round(1) %>g</td>
-      <td><%= @recipe.est_fibre_g_per_serving.round(1) %>g</td>
-    </tr>
-  </table>
-  <small>Estimated <%= @recipe.nutrition_estimated_at ? time_ago_in_words(@recipe.nutrition_estimated_at) + " ago" : "" %></small>
+  <div class="section-divider">Nutrition per serving</div>
+  <div class="nutrition-grid">
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= @recipe.est_calories_per_serving.round %></span>
+      <span class="nutrition-cell__label">kcal</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= @recipe.est_carbs_g_per_serving.round(1) %>g</span>
+      <span class="nutrition-cell__label">Carbs</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= @recipe.est_fat_g_per_serving.round(1) %>g</span>
+      <span class="nutrition-cell__label">Fat</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= @recipe.est_protein_g_per_serving.round(1) %>g</span>
+      <span class="nutrition-cell__label">Protein</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= @recipe.est_fibre_g_per_serving.round(1) %>g</span>
+      <span class="nutrition-cell__label">Fibre</span>
+    </div>
+  </div>
 <% end %>
 <% if is_creator %>
-  <form action="/recipes/<%= @recipe.id %>/estimate_nutrition" method="post" style="display:inline">
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-    <button type="submit"><%= @recipe.est_calories_per_serving.present? ? "Re-estimate Nutrition (AI)" : "Estimate Nutrition (AI)" %></button>
-  </form>
+  <div style="margin-bottom:var(--space-lg);">
+    <form action="/recipes/<%= @recipe.id %>/estimate_nutrition" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit" class="btn btn--secondary btn--sm">
+        <%= @recipe.est_calories_per_serving.present? ? "Re-estimate Nutrition (AI)" : "Estimate Nutrition (AI)" %>
+      </button>
+    </form>
+  </div>
 <% end %>
-
-<hr>
 
 <%# Ingredients %>
-<h3>Ingredients</h3>
+<div class="section-divider">Ingredients</div>
+
 <% if @components.any? %>
   <% @components.each do |comp| %>
-    <h4><%= comp.name %></h4>
-    <ul>
-      <% comp.recipe_ingredients.each do |ing| %>
-        <li>
-          <%= ing.display_quantity %>
-          <% if is_creator %>
-            <small>
-              <a href="/delete_recipe_ingredient/<%= ing.id %>">remove</a>
-            </small>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
+    <div class="component-section">
+      <p class="component-title"><%= comp.name %></p>
+      <ul class="ingredient-list">
+        <% comp.recipe_ingredients.each do |ing| %>
+          <li>
+            <span class="ingredient-qty"><%= [ing.quantity, ing.unit].compact.join(" ") %></span>
+            <span><%= ing.name %></span>
+            <% if is_creator %>
+              <a href="/delete_recipe_ingredient/<%= ing.id %>" class="btn btn--ghost btn--sm" style="margin-left:auto; font-size:11px;">✕</a>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
 <% end %>
+
 <% if @loose_ingredients.any? %>
-  <ul>
+  <ul class="ingredient-list">
     <% @loose_ingredients.each do |ing| %>
       <li>
-        <%= ing.display_quantity %>
+        <span class="ingredient-qty"><%= [ing.quantity, ing.unit].compact.join(" ") %></span>
+        <span><%= ing.name %></span>
         <% if is_creator %>
-          <small><a href="/delete_recipe_ingredient/<%= ing.id %>">remove</a></small>
+          <a href="/delete_recipe_ingredient/<%= ing.id %>" class="btn btn--ghost btn--sm" style="margin-left:auto; font-size:11px;">✕</a>
         <% end %>
       </li>
     <% end %>
   </ul>
 <% end %>
+
 <% if is_creator %>
   <details>
-    <summary>+ Add Ingredient</summary>
+    <summary>Add Ingredient</summary>
     <form action="/insert_recipe_ingredient" method="post">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
       <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
-      <input type="text" name="query_quantity" placeholder="Qty" style="width:60px;">
-      <input type="text" name="query_unit" placeholder="Unit" style="width:80px;">
-      <input type="text" name="query_name" placeholder="Ingredient name" style="width:200px;" required>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Qty</label><input type="text" name="query_quantity" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Unit</label><input type="text" name="query_unit" class="form-input"></div>
+        <div class="form-group" style="flex:3"><label class="form-label">Name <span style="color:var(--error)">*</span></label><input type="text" name="query_name" class="form-input" required></div>
+      </div>
       <% if @recipe.recipe_components.any? %>
-        <select name="query_component_id">
-          <option value="">No component</option>
-          <% @recipe.recipe_components.each do |c| %>
-            <option value="<%= c.id %>"><%= c.name %></option>
-          <% end %>
-        </select>
+        <div class="form-group">
+          <label class="form-label">Component (optional)</label>
+          <select name="query_component_id" class="form-select">
+            <option value="">No component</option>
+            <% @recipe.recipe_components.each do |c| %>
+              <option value="<%= c.id %>"><%= c.name %></option>
+            <% end %>
+          </select>
+        </div>
       <% end %>
-      <button type="submit">Add</button>
+      <button type="submit" class="btn btn--primary btn--sm">Add Ingredient</button>
     </form>
   </details>
 <% end %>
 
-<hr>
-
 <%# Steps %>
-<h3>Instructions</h3>
+<div class="section-divider">Instructions</div>
+
 <% if @components.any? %>
   <% @components.each do |comp| %>
     <% if comp.recipe_steps.any? %>
-      <h4><%= comp.name %></h4>
-      <ol>
-        <% comp.recipe_steps.each do |step| %>
-          <li>
-            <%= step.instruction %>
-            <% if is_creator %>
-              <small><a href="/delete_recipe_step/<%= step.id %>">remove</a></small>
-            <% end %>
-          </li>
-        <% end %>
-      </ol>
+      <div class="component-section">
+        <p class="component-title"><%= comp.name %></p>
+        <ol class="steps-list">
+          <% comp.recipe_steps.each do |step| %>
+            <li>
+              <span><%= step.instruction %></span>
+              <% if is_creator %>
+                <a href="/delete_recipe_step/<%= step.id %>" class="btn btn--ghost btn--sm" style="margin-left:auto; flex-shrink:0; font-size:11px;">✕</a>
+              <% end %>
+            </li>
+          <% end %>
+        </ol>
+      </div>
     <% end %>
   <% end %>
 <% end %>
+
 <% if @loose_steps.any? %>
-  <ol start="<%= (@components.sum { |c| c.recipe_steps.count } + 1) %>">
+  <ol class="steps-list">
     <% @loose_steps.each do |step| %>
       <li>
-        <%= step.instruction %>
+        <span><%= step.instruction %></span>
         <% if is_creator %>
-          <small><a href="/delete_recipe_step/<%= step.id %>">remove</a></small>
+          <a href="/delete_recipe_step/<%= step.id %>" class="btn btn--ghost btn--sm" style="margin-left:auto; flex-shrink:0; font-size:11px;">✕</a>
         <% end %>
       </li>
     <% end %>
   </ol>
 <% end %>
+
 <% if is_creator %>
   <details>
-    <summary>+ Add Step</summary>
+    <summary>Add Step</summary>
     <form action="/insert_recipe_step" method="post">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
       <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
-      <input type="number" name="query_step_number" placeholder="Step #" style="width:60px;" value="<%= (@recipe.recipe_steps.maximum(:step_number) || 0) + 1 %>">
-      <% if @recipe.recipe_components.any? %>
-        <select name="query_component_id">
-          <option value="">No component</option>
-          <% @recipe.recipe_components.each do |c| %>
-            <option value="<%= c.id %>"><%= c.name %></option>
-          <% end %>
-        </select>
-      <% end %>
-      <textarea name="query_instruction" rows="2" style="width:400px;" placeholder="Instruction..." required></textarea>
-      <button type="submit">Add Step</button>
+      <div class="form-row">
+        <div class="form-group" style="flex:0 0 80px;"><label class="form-label">Step #</label><input type="number" name="query_step_number" class="form-input" value="<%= (@recipe.recipe_steps.maximum(:step_number) || 0) + 1 %>"></div>
+        <% if @recipe.recipe_components.any? %>
+          <div class="form-group">
+            <label class="form-label">Component</label>
+            <select name="query_component_id" class="form-select">
+              <option value="">None</option>
+              <% @recipe.recipe_components.each do |c| %>
+                <option value="<%= c.id %>"><%= c.name %></option>
+              <% end %>
+            </select>
+          </div>
+        <% end %>
+      </div>
+      <div class="form-group"><label class="form-label">Instruction <span style="color:var(--error)">*</span></label><textarea name="query_instruction" class="form-textarea" required></textarea></div>
+      <button type="submit" class="btn btn--primary btn--sm">Add Step</button>
     </form>
   </details>
 
   <details>
-    <summary>+ Add Component (section grouping)</summary>
+    <summary>Add Component / Section</summary>
     <form action="/insert_recipe_component" method="post">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
       <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
-      <input type="text" name="query_name" placeholder="e.g. Sauce, Dough, Filling" required style="width:200px;">
-      <button type="submit">Add Component</button>
+      <div class="form-group"><label class="form-label">Section name</label><input type="text" name="query_name" class="form-input" placeholder="e.g. Sauce, Dough, Filling" required></div>
+      <button type="submit" class="btn btn--primary btn--sm">Add Section</button>
     </form>
   </details>
-<% end %>
 
-<hr>
-
-<%# Edit recipe (creator only) %>
-<% if is_creator %>
   <details>
     <summary>Edit Recipe Details</summary>
     <form action="/modify_recipe/<%= @recipe.id %>" method="post" enctype="multipart/form-data">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <div>
-        <label>Title</label><br>
-        <input type="text" name="query_title" value="<%= @recipe.title %>" style="width:400px;" required>
-      </div>
-      <div>
-        <label>Description</label><br>
-        <textarea name="query_description" rows="3" style="width:400px;"><%= @recipe.description %></textarea>
-      </div>
-      <div>
-        <label>Photo</label><br>
+      <div class="form-group"><label class="form-label">Title</label><input type="text" name="query_title" value="<%= @recipe.title %>" class="form-input" required></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea name="query_description" class="form-textarea"><%= @recipe.description %></textarea></div>
+      <div class="form-group">
+        <label class="form-label">Photo</label>
         <% if @recipe.photo.attached? %>
-          <%= image_tag url_for(@recipe.photo), style: "max-width:100px;" %>
-          <br>
+          <%= image_tag url_for(@recipe.photo), style: "max-width:120px; border-radius:var(--radius-md); display:block; margin-bottom:var(--space-sm);" %>
         <% elsif @recipe.photo_url.present? %>
-          <img src="<%= @recipe.photo_url %>" style="max-width:100px;" alt="current photo"><br>
+          <img src="<%= @recipe.photo_url %>" style="max-width:120px; border-radius:var(--radius-md); display:block; margin-bottom:var(--space-sm);">
         <% end %>
         <input type="file" name="photo" accept="image/*">
       </div>
-      <div>
-        <label>Source URL</label><br>
-        <input type="url" name="query_source_url" value="<%= @recipe.source_url %>" style="width:400px;">
+      <div class="form-group"><label class="form-label">Source URL</label><input type="url" name="query_source_url" value="<%= @recipe.source_url %>" class="form-input"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Meal Type</label><select name="query_meal_type" class="form-select"><option value="">—</option><% Recipe::MEAL_TYPES.each do |t| %><option value="<%= t %>" <%= "selected" if @recipe.meal_type == t %>><%= t.humanize %></option><% end %></select></div>
+        <div class="form-group"><label class="form-label">Diet Type</label><select name="query_diet_type" class="form-select"><option value="">—</option><% Recipe::DIET_TYPES.each do |t| %><option value="<%= t %>" <%= "selected" if @recipe.diet_type == t %>><%= t.humanize %></option><% end %></select></div>
       </div>
-      <div>
-        <label>Meal Type</label><br>
-        <select name="query_meal_type">
-          <option value="">-- Select --</option>
-          <% Recipe::MEAL_TYPES.each do |t| %>
-            <option value="<%= t %>" <%= "selected" if @recipe.meal_type == t %>><%= t.humanize %></option>
-          <% end %>
-        </select>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Servings</label><input type="number" name="query_base_servings" value="<%= @recipe.base_servings %>" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Prep (min)</label><input type="number" name="query_prep_time_min" value="<%= @recipe.prep_time_min %>" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Cook (min)</label><input type="number" name="query_cook_time_min" value="<%= @recipe.cook_time_min %>" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Total (min)</label><input type="number" name="query_total_time_min" value="<%= @recipe.total_time_min %>" class="form-input"></div>
       </div>
-      <div>
-        <label>Diet Type</label><br>
-        <select name="query_diet_type">
-          <option value="">-- Select --</option>
-          <% Recipe::DIET_TYPES.each do |t| %>
-            <option value="<%= t %>" <%= "selected" if @recipe.diet_type == t %>><%= t.humanize %></option>
-          <% end %>
-        </select>
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Save Changes</button>
       </div>
-      <div>
-        <label>Servings</label>
-        <input type="number" name="query_base_servings" value="<%= @recipe.base_servings %>" style="width:70px;">
-        &nbsp;
-        <label>Prep (min)</label>
-        <input type="number" name="query_prep_time_min" value="<%= @recipe.prep_time_min %>" style="width:70px;">
-        &nbsp;
-        <label>Cook (min)</label>
-        <input type="number" name="query_cook_time_min" value="<%= @recipe.cook_time_min %>" style="width:70px;">
-        &nbsp;
-        <label>Total (min)</label>
-        <input type="number" name="query_total_time_min" value="<%= @recipe.total_time_min %>" style="width:70px;">
-      </div>
-      <br>
-      <button type="submit">Save Changes</button>
     </form>
   </details>
 <% end %>
 
 <hr>
 
-<%# Notes (private to current user) %>
-<h3>My Notes</h3>
-<% if @notes.any? %>
-  <% @notes.each do |note| %>
-    <blockquote>
-      <%= note.note_text %>
-      <small>
-        — <a href="/delete_recipe_note/<%= note.id %>">delete</a>
-      </small>
-    </blockquote>
-  <% end %>
+<%# Notes %>
+<div class="section-divider">My Notes</div>
+<% @notes.each do |note| %>
+  <div class="note-item">
+    <%= note.note_text %>
+    <a href="/delete_recipe_note/<%= note.id %>" class="btn btn--ghost btn--sm" style="float:right; font-size:11px;">✕</a>
+  </div>
 <% end %>
-<form action="/insert_recipe_note" method="post">
+<form action="/insert_recipe_note" method="post" style="display:flex; gap:var(--space-sm); align-items:flex-start; margin-top:var(--space-sm);">
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
   <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
-  <textarea name="query_note_text" rows="2" style="width:400px;" placeholder="Add a private note…"></textarea>
-  <button type="submit">Add Note</button>
+  <textarea name="query_note_text" class="form-textarea" style="min-height:60px; flex:1;" placeholder="Add a private note…"></textarea>
+  <button type="submit" class="btn btn--secondary">Add Note</button>
 </form>
 
 <hr>
 
 <%# Comments %>
-<h3>Comments</h3>
-<% @comments.each do |comment| %>
-  <p>
-    <strong><a href="/users/<%= comment.user_id %>"><%= comment.user.display %></a></strong>:
-    <%= comment.comment_text %>
-    <small>— <%= time_ago_in_words(comment.created_at) %> ago</small>
-    <% if comment.user_id == current_user.id || is_creator %>
-      <a href="/delete_recipe_comment/<%= comment.id %>">delete</a>
-    <% end %>
-  </p>
-<% end %>
+<div class="section-divider">Comments</div>
+<div style="margin-bottom:var(--space-lg);">
+  <% @comments.each do |comment| %>
+    <div class="comment-item">
+      <div>
+        <a href="/users/<%= comment.user_id %>" class="comment-author"><%= comment.user.display %></a>
+        <p class="comment-text"><%= comment.comment_text %></p>
+      </div>
+      <span class="comment-time"><%= time_ago_in_words(comment.created_at) %> ago</span>
+      <% if comment.user_id == current_user.id || is_creator %>
+        <a href="/delete_recipe_comment/<%= comment.id %>" class="btn btn--ghost btn--sm" style="font-size:11px;">✕</a>
+      <% end %>
+    </div>
+  <% end %>
+</div>
 <% if is_creator || current_user.friend?(@recipe.creator) %>
-  <form action="/insert_recipe_comment" method="post">
+  <form action="/insert_recipe_comment" method="post" style="display:flex; gap:var(--space-sm); align-items:flex-start;">
     <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
     <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
-    <input type="text" name="query_comment_text" placeholder="Add a comment…" style="width:350px;" required>
-    <button type="submit">Comment</button>
+    <input type="text" name="query_comment_text" class="form-input" style="flex:1;" placeholder="Add a comment…" required>
+    <button type="submit" class="btn btn--secondary">Comment</button>
   </form>
 <% end %>

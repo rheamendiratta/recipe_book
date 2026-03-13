@@ -1,71 +1,94 @@
-<h1>Feed</h1>
+<div class="page-header">
+  <h1>Feed</h1>
+</div>
 
 <% if @feed_items.empty? %>
-  <p>Nothing here yet. Add friends to see their activity!</p>
+  <div class="empty-state">
+    <p>Nothing here yet.</p>
+    <p>Add friends to see their recipes and food posts.</p>
+    <a href="/users" class="btn btn--primary">Find People</a>
+  </div>
 <% end %>
 
-<% @feed_items.each do |item| %>
-  <article style="border:1px solid #ccc; padding:10px; margin-bottom:16px;">
+<div class="feed-grid">
+  <% @feed_items.each do |item| %>
 
     <% if item.is_a?(FoodPost) %>
+      <article class="feed-item">
+        <div class="feed-item__header">
+          <div class="feed-item__avatar"><%= item.user.display.first.upcase %></div>
+          <div>
+            <a href="/users/<%= item.user_id %>" class="feed-item__author"><%= item.user.display %></a>
+            <div class="feed-item__action">shared a photo</div>
+          </div>
+          <span class="feed-item__time"><%= time_ago_in_words(item.created_at) %> ago</span>
+        </div>
 
-      <p>
-        <strong><a href="/users/<%= item.user_id %>"><%= item.user.display %></a></strong>
-        posted a photo
-        <small>— <%= time_ago_in_words(item.created_at) %> ago</small>
-      </p>
+        <% if item.photo.attached? %>
+          <%= image_tag url_for(item.photo), class: "feed-item__photo" %>
+        <% elsif item.photo_url.present? %>
+          <img src="<%= item.photo_url %>" class="feed-item__photo" alt="">
+        <% end %>
 
-      <% if item.photo.attached? %>
-        <%= image_tag url_for(item.photo), style: "max-width:400px; display:block;" %>
-      <% elsif item.photo_url.present? %>
-        <img src="<%= item.photo_url %>" style="max-width:400px; display:block;" alt="food photo">
-      <% end %>
+        <div class="feed-item__body">
+          <p class="feed-item__caption"><%= item.caption %></p>
+          <% if item.recipe.present? %>
+            <p class="feed-item__recipe-link">Recipe: <a href="/recipes/<%= item.recipe_id %>"><%= item.recipe.title %></a></p>
+          <% end %>
+        </div>
 
-      <p><%= item.caption %></p>
-
-      <% if item.recipe.present? %>
-        <p>Recipe: <a href="/recipes/<%= item.recipe_id %>"><%= item.recipe.title %></a></p>
-      <% end %>
-
-      <p>
-        <form action="/toggle_post_like/<%= item.id %>" method="post" style="display:inline">
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <% liked = item.post_likes.any? { |l| l.user_id == current_user.id } %>
-          <button type="submit"><%= liked ? "Unlike" : "Like" %></button>
-        </form>
-        <%= item.post_likes.count %> like<%= "s" if item.post_likes.count != 1 %>
-        &nbsp;|&nbsp;
-        <a href="/posts/<%= item.id %>"><%= item.post_comments.count %> comment<%= "s" if item.post_comments.count != 1 %></a>
-      </p>
+        <div class="feed-item__actions">
+          <form action="/toggle_post_like/<%= item.id %>" method="post" style="display:inline">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <% liked = item.post_likes.any? { |l| l.user_id == current_user.id } %>
+            <button type="submit" class="feed-item__like-btn">
+              <%= liked ? "♥ Unlike" : "♡ Like" %>
+            </button>
+          </form>
+          <span class="text-sm"><%= item.post_likes.count %> like<%= "s" if item.post_likes.count != 1 %></span>
+          <a href="/posts/<%= item.id %>" class="feed-item__comment-link"><%= item.post_comments.count %> comment<%= "s" if item.post_comments.count != 1 %></a>
+        </div>
+      </article>
 
     <% elsif item.is_a?(RecipeBookEntry) %>
-
       <% recipe = item.recipe %>
       <% if recipe %>
-        <p>
-          <strong><a href="/users/<%= item.user_id %>"><%= item.user.display %></a></strong>
-          <% if item.entry_type == "owned" %>
-            created a new recipe
-          <% elsif item.entry_type == "saved" %>
-            saved a recipe
-          <% elsif item.entry_type == "duplicated" %>
-            duplicated a recipe
-          <% end %>
-          <small>— <%= time_ago_in_words(item.created_at) %> ago</small>
-        </p>
+        <article class="feed-item">
+          <div class="feed-item__header">
+            <div class="feed-item__avatar"><%= item.user.display.first.upcase %></div>
+            <div>
+              <a href="/users/<%= item.user_id %>" class="feed-item__author"><%= item.user.display %></a>
+              <div class="feed-item__action">
+                <% if item.entry_type == "owned" %>added a new recipe
+                <% elsif item.entry_type == "saved" %>saved a recipe
+                <% elsif item.entry_type == "duplicated" %>duplicated a recipe
+                <% end %>
+              </div>
+            </div>
+            <span class="feed-item__time"><%= time_ago_in_words(item.created_at) %> ago</span>
+          </div>
 
-        <% if recipe.photo_url.present? %>
-          <img src="<%= recipe.photo_url %>" style="max-width:200px; display:block;" alt="recipe photo">
-        <% end %>
-
-        <p><a href="/recipes/<%= recipe.id %>"><strong><%= recipe.title %></strong></a></p>
-
-        <% if recipe.total_time_min.present? %>
-          <small><%= recipe.total_time_display %> &bull; <%= recipe.meal_type_label %> &bull; <%= recipe.diet_type_label %></small>
-        <% end %>
+          <div class="feed-item__recipe-card">
+            <% if recipe.photo.attached? %>
+              <%= image_tag url_for(recipe.photo), class: "feed-item__recipe-thumb" %>
+            <% elsif recipe.photo_url.present? %>
+              <img src="<%= recipe.photo_url %>" class="feed-item__recipe-thumb" alt="">
+            <% else %>
+              <div class="book-item__thumb-placeholder">🍳</div>
+            <% end %>
+            <div class="feed-item__recipe-info">
+              <a href="/recipes/<%= recipe.id %>" class="feed-item__recipe-title"><%= recipe.title %></a>
+              <div class="book-item__badges">
+                <% if recipe.total_time_min.present? %>
+                  <span class="recipe-meta__item"><%= recipe.total_time_display %></span>
+                <% end %>
+                <%= render partial: "shared/diet_badge", locals: { diet_type: recipe.diet_type } if recipe.diet_type.present? %>
+              </div>
+            </div>
+          </div>
+        </article>
       <% end %>
 
     <% end %>
-
-  </article>
-<% end %>
+  <% end %>
+</div>

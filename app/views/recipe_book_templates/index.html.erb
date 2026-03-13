@@ -1,56 +1,85 @@
-<h1>My Recipe Book</h1>
+<div class="page-header">
+  <h1>My Recipe Book</h1>
+  <a href="/recipes/new" class="btn btn--primary btn--sm">+ New Recipe</a>
+</div>
 
-<form action="/my_book/search" method="get">
-  <label>Search by ingredient:</label>
-  <input type="text" name="query" value="<%= @query %>">
-  &nbsp;
-  <label>Max total time:</label>
-  <select name="duration">
-    <option value="">Any</option>
-    <option value="15" <%= "selected" if @duration == 15 %>>15 min or less</option>
-    <option value="30" <%= "selected" if @duration == 30 %>>30 min or less</option>
-    <option value="45" <%= "selected" if @duration == 45 %>>45 min or less</option>
-  </select>
-  <button type="submit">Search</button>
-  <% if @query.present? || @duration.to_i > 0 %>
-    <a href="/my_book">Clear</a>
-  <% end %>
-</form>
-
-<hr>
+<div class="search-bar">
+  <form action="/my_book/search" method="get" style="display:contents">
+    <div class="form-group">
+      <label class="form-label">Search by ingredient</label>
+      <input type="text" name="query" value="<%= @query %>" class="form-input" placeholder="e.g. garlic, lentils…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Max total time</label>
+      <select name="duration" class="form-select">
+        <option value="">Any time</option>
+        <option value="15" <%= "selected" if @duration == 15 %>>15 min or less</option>
+        <option value="30" <%= "selected" if @duration == 30 %>>30 min or less</option>
+        <option value="45" <%= "selected" if @duration == 45 %>>45 min or less</option>
+      </select>
+    </div>
+    <div class="form-group" style="align-self:flex-end">
+      <button type="submit" class="btn btn--primary">Search</button>
+      <% if @query.present? || @duration.to_i > 0 %>
+        <a href="/my_book" class="btn btn--secondary">Clear</a>
+      <% end %>
+    </div>
+  </form>
+</div>
 
 <% if @recipes.empty? %>
-  <p>No recipes found. <a href="/recipes/new">Create one</a> or <a href="/recipes/import">import one</a>.</p>
-<% end %>
-
-<% @recipes.each do |recipe| %>
-  <% entry = @entry_map[recipe.id] %>
-  <article style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-    <% if recipe.photo_url.present? %>
-      <img src="<%= recipe.photo_url %>" style="max-width:150px; float:right;" alt="photo">
-    <% end %>
-    <h3><a href="/recipes/<%= recipe.id %>"><%= recipe.title %></a></h3>
-    <p>
-      <small>
-        <% if entry %>
-          <% if entry.entry_type == "owned" %>My recipe<% elsif entry.entry_type == "saved" %>Saved from <a href="/users/<%= recipe.creator_id %>"><%= recipe.creator.display %></a><% elsif entry.entry_type == "duplicated" %>Duplicated from <a href="/users/<%= recipe.creator_id %>"><%= recipe.creator.display %></a><% end %>
-        <% end %>
-        <% if recipe.total_time_min.present? %> &bull; <%= recipe.total_time_display %><% end %>
-        <% if recipe.meal_type.present? %> &bull; <%= recipe.meal_type_label %><% end %>
-        <% if recipe.diet_type.present? %> &bull; <%= recipe.diet_type_label %><% end %>
-      </small>
-    </p>
-    <% if entry %>
-      <p>
-        <% if entry.has_cooked %>
-          Cooked ✓
-          <% if entry.star_rating %>
-            &bull; Rating: <%= "★" * entry.star_rating %><%= "☆" * (5 - entry.star_rating) %>
-          <% end %>
+  <div class="empty-state">
+    <p>No recipes found.</p>
+    <a href="/recipes/new" class="btn btn--primary">Create a recipe</a>
+    &nbsp;
+    <a href="/recipes/import" class="btn btn--secondary">Import from URL</a>
+  </div>
+<% else %>
+  <div class="book-grid">
+    <% @recipes.each do |recipe| %>
+      <% entry = @entry_map[recipe.id] %>
+      <article class="book-item">
+        <% if recipe.photo.attached? %>
+          <%= image_tag url_for(recipe.photo), class: "book-item__thumb" %>
+        <% elsif recipe.photo_url.present? %>
+          <img src="<%= recipe.photo_url %>" class="book-item__thumb" alt="">
         <% else %>
-          Not cooked yet
+          <div class="book-item__thumb-placeholder">🍳</div>
         <% end %>
-      </p>
+
+        <div class="book-item__content">
+          <a href="/recipes/<%= recipe.id %>" class="book-item__title"><%= recipe.title %></a>
+          <div class="book-item__badges">
+            <% if entry %>
+              <span class="badge badge--entry"><%= entry.entry_type %></span>
+            <% end %>
+            <% if recipe.total_time_min.present? %>
+              <span class="recipe-meta__item"><%= recipe.total_time_display %></span>
+            <% end %>
+            <% if recipe.meal_type.present? %>
+              <span class="recipe-meta__item"><%= recipe.meal_type_label %></span>
+            <% end %>
+            <%= render partial: "shared/diet_badge", locals: { diet_type: recipe.diet_type } if recipe.diet_type.present? %>
+          </div>
+          <% if entry %>
+            <% if entry.has_cooked %>
+              <span class="book-item__cooked">
+                ✓ Cooked
+                <% if entry.star_rating %>
+                  &nbsp;
+                  <span class="stars">
+                    <% (1..5).each do |n| %>
+                      <span class="star <%= n <= entry.star_rating ? 'star--filled' : 'star--empty' %>">★</span>
+                    <% end %>
+                  </span>
+                <% end %>
+              </span>
+            <% else %>
+              <span class="book-item__not-cooked">Not cooked yet</span>
+            <% end %>
+          <% end %>
+        </div>
+      </article>
     <% end %>
-  </article>
+  </div>
 <% end %>

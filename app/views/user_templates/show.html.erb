@@ -1,51 +1,52 @@
-<h1><%= @user.display %></h1>
-<p><small><%= @user.email %></small></p>
+<a href="/users" class="back-link">← Find People</a>
 
-<%# Friendship status %>
-<% if @user == current_user %>
-  <p><em>This is you.</em> <a href="/users/edit">Edit profile</a></p>
-<% elsif @friendship.nil? %>
-  <form action="/friendships/request/<%= @user.id %>" method="post">
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-    <button type="submit">Send Friend Request</button>
-  </form>
-<% elsif @friendship.accepted? %>
-  <p><em>You are friends.</em>
-    <a href="/users/<%= @user.id %>/book">View their recipe book</a>
-  </p>
-<% elsif @friendship.pending? && @friendship.requester_id == current_user.id %>
-  <p><em>Friend request sent.</em>
-    <a href="/friendships/withdraw/<%= @friendship.id %>">Withdraw</a>
-  </p>
-<% elsif @friendship.pending? %>
-  <p>
-    <em>This person sent you a friend request.</em>
-    <form action="/friendships/accept/<%= @friendship.id %>" method="post" style="display:inline">
-      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <button type="submit">Accept</button>
-    </form>
-    <form action="/friendships/decline/<%= @friendship.id %>" method="post" style="display:inline">
-      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <button type="submit">Decline</button>
-    </form>
-  </p>
-<% end %>
+<div class="user-card">
+  <div class="user-avatar-large"><%= @user.display.first.upcase %></div>
+  <div>
+    <h2 style="margin-bottom:var(--space-xs);"><%= @user.display %></h2>
+    <p class="text-sm"><%= @user.email %></p>
+  </div>
+  <div style="margin-left:auto;" class="action-row">
+    <% if @user == current_user %>
+      <a href="/users/edit" class="btn btn--secondary btn--sm">Edit Profile</a>
+    <% elsif @friendship.nil? %>
+      <form action="/friendships/request/<%= @user.id %>" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" class="btn btn--primary btn--sm">Add Friend</button>
+      </form>
+    <% elsif @friendship.accepted? %>
+      <a href="/users/<%= @user.id %>/book" class="btn btn--secondary btn--sm">View Recipe Book</a>
+    <% elsif @friendship.pending? && @friendship.requester_id == current_user.id %>
+      <span class="text-sm">Request sent</span>
+      <a href="/friendships/withdraw/<%= @friendship.id %>" class="btn btn--ghost btn--sm">Withdraw</a>
+    <% elsif @friendship.pending? %>
+      <form action="/friendships/accept/<%= @friendship.id %>" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" class="btn btn--primary btn--sm">Accept</button>
+      </form>
+      <form action="/friendships/decline/<%= @friendship.id %>" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" class="btn btn--secondary btn--sm">Decline</button>
+      </form>
+    <% end %>
+  </div>
+</div>
 
 <% if @recent_posts %>
-  <h3>Recent Posts</h3>
+  <div class="section-divider">Recent Posts</div>
   <% if @recent_posts.empty? %>
-    <p>No posts yet.</p>
-  <% end %>
-  <% @recent_posts.each do |post| %>
-    <article style="display:inline-block; vertical-align:top; margin:8px; border:1px solid #ccc; padding:8px; width:180px;">
-      <a href="/posts/<%= post.id %>">
-        <% if post.photo.attached? %>
-          <%= image_tag url_for(post.photo), style: "width:160px; height:120px; object-fit:cover;" %>
-        <% elsif post.photo_url.present? %>
-          <img src="<%= post.photo_url %>" style="width:160px; height:120px; object-fit:cover;" alt="">
-        <% end %>
-        <p><small><%= post.caption.truncate(60) %></small></p>
-      </a>
-    </article>
+    <p class="text-sm">No posts yet.</p>
+  <% else %>
+    <div class="photo-grid">
+      <% @recent_posts.each do |post| %>
+        <a href="/posts/<%= post.id %>" class="photo-grid__item">
+          <% if post.photo.attached? %>
+            <%= image_tag url_for(post.photo), alt: post.caption %>
+          <% elsif post.photo_url.present? %>
+            <img src="<%= post.photo_url %>" alt="<%= post.caption %>">
+          <% end %>
+        </a>
+      <% end %>
+    </div>
   <% end %>
 <% end %>

@@ -1,70 +1,84 @@
+<a href="/recipes/<%= @recipe.id %>" class="back-link">← Back to Recipe</a>
 <h1>Cooking: <%= @recipe.title %></h1>
-<p><a href="/recipes/<%= @recipe.id %>">← Back to Recipe</a></p>
 
-<form action="/recipes/<%= @recipe.id %>/cook" method="get">
-  <label><strong>Servings:</strong></label>
-  <input type="number" name="servings" value="<%= @serving_size.to_i %>" min="1" style="width:60px;" onchange="this.form.submit()">
-  <small>(base: <%= @recipe.base_servings %> servings)</small>
-</form>
+<div class="card" style="display:inline-flex; align-items:center; gap:var(--space-md); margin-bottom:var(--space-xl);">
+  <form action="/recipes/<%= @recipe.id %>/cook" method="get" style="display:flex; align-items:center; gap:var(--space-md);">
+    <label class="form-label" style="margin:0;">Servings:</label>
+    <input type="number" name="servings" value="<%= @serving_size.to_i %>" min="1" class="form-input" style="width:80px;" onchange="this.form.submit()">
+    <span class="text-sm">(base: <%= @recipe.base_servings %>)</span>
+  </form>
+</div>
 
-<h3>Ingredients</h3>
+<div class="section-divider">Ingredients</div>
 <% scale = @ratio %>
 
-<% if @recipe.recipe_components.any? %>
+<% if @components.any? %>
   <% @components.each do |comp| %>
     <% if comp.recipe_ingredients.any? %>
-      <h4><%= comp.name %></h4>
-      <ul>
-        <% comp.recipe_ingredients.each do |ing| %>
-          <li>
-            <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
-              <strong><%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %></strong>
-              <%= ing.unit %>
-            <% end %>
-            <%= ing.name %>
-          </li>
-        <% end %>
-      </ul>
+      <div class="component-section">
+        <p class="component-title"><%= comp.name %></p>
+        <ul class="ingredient-list">
+          <% comp.recipe_ingredients.each do |ing| %>
+            <li>
+              <span class="ingredient-qty">
+                <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
+                  <%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %> <%= ing.unit %>
+                <% end %>
+              </span>
+              <span><%= ing.name %></span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
   <% end %>
 <% end %>
 
 <% if @loose_ingredients.any? %>
-  <ul>
+  <ul class="ingredient-list">
     <% @loose_ingredients.each do |ing| %>
       <li>
-        <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
-          <strong><%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %></strong>
-          <%= ing.unit %>
-        <% end %>
-        <%= ing.name %>
+        <span class="ingredient-qty">
+          <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
+            <%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %> <%= ing.unit %>
+          <% end %>
+        </span>
+        <span><%= ing.name %></span>
       </li>
     <% end %>
   </ul>
 <% end %>
 
-<hr>
-
-<h3>Instructions</h3>
-<% all_steps = @recipe.recipe_steps.order(:step_number) %>
-<ol>
-  <% all_steps.each do |step| %>
-    <li><%= step.instruction %></li>
+<div class="section-divider">Instructions</div>
+<ol class="steps-list">
+  <% @recipe.recipe_steps.order(:step_number).each do |step| %>
+    <li><span><%= step.instruction %></span></li>
   <% end %>
 </ol>
 
 <% if @recipe.est_calories_per_serving.present? %>
-  <hr>
-  <h3>Nutrition for <%= @serving_size.to_i %> serving<%= "s" if @serving_size != 1 %></h3>
-  <table border="1" cellpadding="4">
-    <tr><th>Calories</th><th>Carbs</th><th>Fat</th><th>Protein</th><th>Fibre</th></tr>
-    <tr>
-      <td><%= (@recipe.est_calories_per_serving * @serving_size).round(1) %> kcal</td>
-      <td><%= (@recipe.est_carbs_g_per_serving * @serving_size).round(1) %>g</td>
-      <td><%= (@recipe.est_fat_g_per_serving * @serving_size).round(1) %>g</td>
-      <td><%= (@recipe.est_protein_g_per_serving * @serving_size).round(1) %>g</td>
-      <td><%= (@recipe.est_fibre_g_per_serving * @serving_size).round(1) %>g</td>
-    </tr>
-  </table>
-  <small>Per serving: <%= @recipe.est_calories_per_serving.round(1) %> kcal</small>
+  <div class="section-divider">Nutrition for <%= @serving_size.to_i %> serving<%= "s" if @serving_size != 1 %></div>
+  <div class="nutrition-grid">
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= (@recipe.est_calories_per_serving * @serving_size).round %></span>
+      <span class="nutrition-cell__label">kcal</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= (@recipe.est_carbs_g_per_serving * @serving_size).round(1) %>g</span>
+      <span class="nutrition-cell__label">Carbs</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= (@recipe.est_fat_g_per_serving * @serving_size).round(1) %>g</span>
+      <span class="nutrition-cell__label">Fat</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= (@recipe.est_protein_g_per_serving * @serving_size).round(1) %>g</span>
+      <span class="nutrition-cell__label">Protein</span>
+    </div>
+    <div class="nutrition-cell">
+      <span class="nutrition-cell__value"><%= (@recipe.est_fibre_g_per_serving * @serving_size).round(1) %>g</span>
+      <span class="nutrition-cell__label">Fibre</span>
+    </div>
+  </div>
+  <p class="text-sm">Per serving: <%= @recipe.est_calories_per_serving.round %> kcal</p>
 <% end %>

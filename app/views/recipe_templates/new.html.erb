@@ -1,97 +1,115 @@
+<a href="/my_book" class="back-link">← My Book</a>
 <h1>New Recipe</h1>
-<p><a href="/my_book">Back to My Book</a></p>
 
 <% if @errors %>
-  <% @errors.each do |e| %><p style="color:red"><%= e %></p><% end %>
+  <% @errors.each do |e| %>
+    <div class="flash flash--error"><%= e %></div>
+  <% end %>
 <% end %>
 
 <form action="/insert_recipe" method="post" enctype="multipart/form-data" data-controller="recipe-form">
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-  <h3>Basic Info</h3>
-  <div>
-    <label>Title *</label><br>
-    <input type="text" name="query_title" required style="width:400px;">
+  <p class="form-section-title">Basic Info</p>
+
+  <div class="form-group">
+    <label class="form-label">Title <span style="color:var(--error)">*</span></label>
+    <input type="text" name="query_title" required class="form-input" placeholder="e.g. Mum's Dal Tadka">
   </div>
-  <div>
-    <label>Description</label><br>
-    <textarea name="query_description" rows="3" style="width:400px;"></textarea>
+  <div class="form-group">
+    <label class="form-label">Description</label>
+    <textarea name="query_description" class="form-textarea" placeholder="A short description of the dish…"></textarea>
   </div>
-  <div>
-    <label>Photo</label><br>
+  <div class="form-group">
+    <label class="form-label">Photo</label>
     <input type="file" name="photo" accept="image/*">
   </div>
-  <div>
-    <label>Source URL (if from a website)</label><br>
-    <input type="url" name="query_source_url" style="width:400px;">
+  <div class="form-group">
+    <label class="form-label">Source URL <span class="text-tertiary">(if from a website)</span></label>
+    <input type="url" name="query_source_url" class="form-input" placeholder="https://…">
   </div>
 
-  <h3>Meal Details</h3>
-  <div>
-    <label>Meal Type</label><br>
-    <select name="query_meal_type">
-      <option value="">-- Select --</option>
-      <% Recipe::MEAL_TYPES.each do |t| %>
-        <option value="<%= t %>"><%= t.humanize %></option>
-      <% end %>
-    </select>
-  </div>
-  <div>
-    <label>Diet Type</label><br>
-    <select name="query_diet_type">
-      <option value="">-- Select --</option>
-      <% Recipe::DIET_TYPES.each do |t| %>
-        <option value="<%= t %>"><%= t.humanize %></option>
-      <% end %>
-    </select>
-  </div>
-  <div>
-    <label>Servings</label><br>
-    <input type="number" name="query_base_servings" min="1" style="width:80px;">
-  </div>
-  <div>
-    <label>Prep time (min)</label>
-    <input type="number" name="query_prep_time_min" min="0" style="width:80px;">
-    &nbsp;
-    <label>Cook time (min)</label>
-    <input type="number" name="query_cook_time_min" min="0" style="width:80px;">
-    &nbsp;
-    <label>Total time (min)</label>
-    <input type="number" name="query_total_time_min" min="0" style="width:80px;">
+  <p class="form-section-title">Meal Details</p>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Meal Type</label>
+      <select name="query_meal_type" class="form-select">
+        <option value="">— Select —</option>
+        <% Recipe::MEAL_TYPES.each do |t| %>
+          <option value="<%= t %>"><%= t.humanize %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Diet Type</label>
+      <select name="query_diet_type" class="form-select">
+        <option value="">— Select —</option>
+        <% Recipe::DIET_TYPES.each do |t| %>
+          <option value="<%= t %>"><%= t.humanize %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Servings</label>
+      <input type="number" name="query_base_servings" min="1" class="form-input">
+    </div>
   </div>
 
-  <h3>Ingredients</h3>
-  <p><small>Leave blank rows empty — they will be ignored.</small></p>
-  <table>
-    <thead><tr><th>Qty</th><th>Unit</th><th>Ingredient Name</th><th></th></tr></thead>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Prep time (min)</label>
+      <input type="number" name="query_prep_time_min" min="0" class="form-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cook time (min)</label>
+      <input type="number" name="query_cook_time_min" min="0" class="form-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Total time (min)</label>
+      <input type="number" name="query_total_time_min" min="0" class="form-input">
+    </div>
+  </div>
+
+  <p class="form-section-title">Ingredients</p>
+  <p class="text-sm">Leave blank rows empty — they will be ignored.</p>
+
+  <table class="ingredient-table mt-sm">
+    <thead>
+      <tr><th>Qty</th><th>Unit</th><th>Ingredient</th><th></th></tr>
+    </thead>
     <tbody data-recipe-form-target="ingredientRows">
       <% 5.times do |i| %>
         <tr>
-          <td><input type="text" name="ingredient_qty_<%= i+1 %>" style="width:60px;"></td>
-          <td><input type="text" name="ingredient_unit_<%= i+1 %>" style="width:80px;" placeholder="g, cup, tsp…"></td>
-          <td><input type="text" name="ingredient_name_<%= i+1 %>" style="width:250px;"></td>
-          <td><button type="button" data-action="click->recipe-form#removeRow">Remove</button></td>
+          <td><input type="text" name="ingredient_qty_<%= i+1 %>" class="form-input" style="width:70px;"></td>
+          <td><input type="text" name="ingredient_unit_<%= i+1 %>" class="form-input" style="width:90px;" placeholder="g, cup…"></td>
+          <td><input type="text" name="ingredient_name_<%= i+1 %>" class="form-input"></td>
+          <td><button type="button" class="btn btn--ghost btn--sm" data-action="click->recipe-form#removeRow">✕</button></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-  <button type="button" data-action="click->recipe-form#addIngredientRow">+ Add Ingredient</button>
+  <button type="button" class="btn btn--secondary btn--sm mt-sm" data-action="click->recipe-form#addIngredientRow">+ Add Ingredient</button>
 
-  <h3>Steps</h3>
-  <table>
-    <thead><tr><th>#</th><th>Instruction</th><th></th></tr></thead>
+  <p class="form-section-title">Steps</p>
+  <table class="ingredient-table mt-sm">
+    <thead>
+      <tr><th>#</th><th>Instruction</th><th></th></tr>
+    </thead>
     <tbody data-recipe-form-target="stepRows">
       <% 3.times do |i| %>
         <tr>
-          <td><%= i+1 %></td>
-          <td><textarea name="step_instruction_<%= i+1 %>" rows="2" style="width:450px;"></textarea></td>
-          <td><button type="button" data-action="click->recipe-form#removeRow">Remove</button></td>
+          <td style="width:30px; color:var(--text-tertiary); font-family:var(--font-ui); font-size:13px;"><%= i+1 %></td>
+          <td><textarea name="step_instruction_<%= i+1 %>" class="form-textarea" style="min-height:60px;"></textarea></td>
+          <td><button type="button" class="btn btn--ghost btn--sm" data-action="click->recipe-form#removeRow">✕</button></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-  <button type="button" data-action="click->recipe-form#addStepRow">+ Add Step</button>
+  <button type="button" class="btn btn--secondary btn--sm mt-sm" data-action="click->recipe-form#addStepRow">+ Add Step</button>
 
-  <br><br>
-  <button type="submit">Create Recipe</button>
+  <div class="form-actions">
+    <button type="submit" class="btn btn--primary">Create Recipe</button>
+    <a href="/my_book" class="btn btn--secondary">Cancel</a>
+  </div>
 </form>

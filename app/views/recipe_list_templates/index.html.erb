@@ -1,22 +1,30 @@
-<h1>My Recipe Lists</h1>
+<div class="page-header">
+  <h1>My Lists</h1>
+</div>
 
-<form action="/insert_recipe_list" method="post">
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-  <input type="text" name="query_name" placeholder="New list name…" required style="width:250px;">
-  <button type="submit">Create List</button>
-</form>
-
-<hr>
+<div class="card" style="max-width:480px; margin-bottom:var(--space-xl);">
+  <form action="/insert_recipe_list" method="post" style="display:flex; gap:var(--space-sm);">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <input type="text" name="query_name" class="form-input" placeholder="New list name…" required style="flex:1;">
+    <button type="submit" class="btn btn--primary">Create</button>
+  </form>
+</div>
 
 <% if @lists.empty? %>
-  <p>No lists yet. Create one above to organise your recipes.</p>
-<% end %>
-
-<% @lists.each do |list| %>
-  <article style="border:1px solid #ccc; padding:8px; margin-bottom:8px;">
-    <strong><a href="/recipe_lists/<%= list.id %>"><%= list.name %></a></strong>
-    &nbsp;<small>(<%= list.recipe_list_items.count %> recipes)</small>
-    &nbsp;|&nbsp;
-    <a href="/delete_recipe_list/<%= list.id %>" data-turbo-confirm="Delete this list?">delete</a>
-  </article>
+  <div class="empty-state">
+    <p>No lists yet. Create one to organise your recipes.</p>
+  </div>
+<% else %>
+  <div class="book-grid">
+    <% @lists.each do |list| %>
+      <article class="book-item">
+        <div class="book-item__thumb-placeholder">📋</div>
+        <div class="book-item__content">
+          <a href="/recipe_lists/<%= list.id %>" class="book-item__title"><%= list.name %></a>
+          <p class="text-sm"><%= list.recipe_list_items.count %> recipe<%= "s" if list.recipe_list_items.count != 1 %></p>
+        </div>
+        <a href="/delete_recipe_list/<%= list.id %>" class="btn btn--ghost btn--sm" data-turbo-confirm="Delete this list?" style="margin-left:auto; align-self:center;">✕</a>
+      </article>
+    <% end %>
+  </div>
 <% end %>

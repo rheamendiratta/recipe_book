@@ -1,44 +1,61 @@
-<h1>Friends</h1>
+<div class="page-header">
+  <h1>Friends</h1>
+  <a href="/users" class="btn btn--secondary btn--sm">Find People</a>
+</div>
 
 <% if @pending_received.any? %>
-  <h3>Pending Requests (<%= @pending_received.count %>)</h3>
+  <div class="section-divider">Requests for you (<%= @pending_received.count %>)</div>
   <% @pending_received.each do |f| %>
-    <p>
-      <strong><a href="/users/<%= f.requester_id %>"><%= f.requester.display %></a></strong> sent you a friend request.
-      <form action="/friendships/accept/<%= f.id %>" method="post" style="display:inline">
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <button type="submit">Accept</button>
-      </form>
-      <form action="/friendships/decline/<%= f.id %>" method="post" style="display:inline">
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <button type="submit">Decline</button>
-      </form>
-    </p>
+    <div class="card" style="display:flex; align-items:center; gap:var(--space-md);">
+      <div class="feed-item__avatar"><%= f.requester.display.first.upcase %></div>
+      <div style="flex:1;">
+        <a href="/users/<%= f.requester_id %>" style="font-weight:600; font-family:var(--font-ui);"><%= f.requester.display %></a>
+        <p class="text-sm">sent you a friend request</p>
+      </div>
+      <div class="action-row">
+        <form action="/friendships/accept/<%= f.id %>" method="post" style="display:inline">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="btn btn--primary btn--sm">Accept</button>
+        </form>
+        <form action="/friendships/decline/<%= f.id %>" method="post" style="display:inline">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="btn btn--secondary btn--sm">Decline</button>
+        </form>
+      </div>
+    </div>
   <% end %>
-  <hr>
 <% end %>
 
 <% if @pending_sent.any? %>
-  <h3>Sent Requests</h3>
+  <div class="section-divider">Sent Requests</div>
   <% @pending_sent.each do |f| %>
-    <p>
-      Waiting on <strong><a href="/users/<%= f.addressee_id %>"><%= f.addressee.display %></a></strong>
-      &nbsp;—&nbsp;
-      <a href="/friendships/withdraw/<%= f.id %>">Withdraw</a>
-    </p>
+    <div class="card" style="display:flex; align-items:center; gap:var(--space-md);">
+      <div class="feed-item__avatar"><%= f.addressee.display.first.upcase %></div>
+      <div style="flex:1;">
+        <a href="/users/<%= f.addressee_id %>" style="font-weight:600; font-family:var(--font-ui);"><%= f.addressee.display %></a>
+        <p class="text-sm">Request pending</p>
+      </div>
+      <a href="/friendships/withdraw/<%= f.id %>" class="btn btn--secondary btn--sm">Withdraw</a>
+    </div>
   <% end %>
-  <hr>
 <% end %>
 
-<h3>Your Friends (<%= @friends.count %>)</h3>
+<div class="section-divider">Your Friends (<%= @friends.count %>)</div>
 <% if @friends.empty? %>
-  <p>No friends yet. <a href="/users">Find people</a> to add.</p>
+  <div class="empty-state">
+    <p>No friends yet.</p>
+    <a href="/users" class="btn btn--primary">Find People</a>
+  </div>
 <% else %>
-  <% @friends.each do |friend| %>
-    <p>
-      <strong><a href="/users/<%= friend.id %>"><%= friend.display %></a></strong>
-      &nbsp;|&nbsp;
-      <a href="/users/<%= friend.id %>/book">View their recipe book</a>
-    </p>
-  <% end %>
+  <div class="book-grid">
+    <% @friends.each do |friend| %>
+      <div class="card" style="display:flex; align-items:center; gap:var(--space-md);">
+        <div class="feed-item__avatar"><%= friend.display.first.upcase %></div>
+        <div style="flex:1;">
+          <a href="/users/<%= friend.id %>" style="font-weight:600; font-family:var(--font-ui); font-size:15px;"><%= friend.display %></a>
+        </div>
+        <a href="/users/<%= friend.id %>/book" class="btn btn--secondary btn--sm">Their Book</a>
+      </div>
+    <% end %>
+  </div>
 <% end %>

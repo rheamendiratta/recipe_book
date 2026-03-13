@@ -1,24 +1,29 @@
-<h1>Find People</h1>
+<div class="page-header">
+  <h1>Find People</h1>
+</div>
 
-<% @users.each do |user| %>
-  <article style="border:1px solid #ccc; padding:8px; margin-bottom:8px;">
-    <strong><a href="/users/<%= user.id %>"><%= user.display %></a></strong>
-    &nbsp;
-    <% friendship = @friendships[user.id] %>
-    <% if friendship.nil? %>
-      <form action="/friendships/request/<%= user.id %>" method="post" style="display:inline">
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <button type="submit">Send Friend Request</button>
-      </form>
-    <% elsif friendship.accepted? %>
-      <em>Friends</em> | <a href="/users/<%= user.id %>/book">View their book</a>
-    <% elsif friendship.pending? && friendship.requester_id == current_user.id %>
-      <em>Request sent</em>
-      <a href="/friendships/withdraw/<%= friendship.id %>">Withdraw</a>
-    <% elsif friendship.pending? %>
-      <em>Sent you a request</em> — <a href="/friends">Respond</a>
-    <% elsif friendship.declined? %>
-      <em>Not connected</em>
-    <% end %>
-  </article>
-<% end %>
+<div class="book-grid">
+  <% @users.each do |user| %>
+    <div class="card" style="display:flex; align-items:center; gap:var(--space-md);">
+      <div class="feed-item__avatar"><%= user.display.first.upcase %></div>
+      <div style="flex:1;">
+        <a href="/users/<%= user.id %>" style="font-weight:600; font-family:var(--font-ui); font-size:15px; display:block;"><%= user.display %></a>
+        <span class="text-sm"><%= user.email %></span>
+      </div>
+      <% friendship = @friendships[user.id] %>
+      <% if friendship.nil? %>
+        <form action="/friendships/request/<%= user.id %>" method="post" style="display:inline">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="btn btn--primary btn--sm">Add Friend</button>
+        </form>
+      <% elsif friendship.accepted? %>
+        <a href="/users/<%= user.id %>/book" class="btn btn--secondary btn--sm">Their Book</a>
+      <% elsif friendship.pending? && friendship.requester_id == current_user.id %>
+        <span class="text-sm" style="color:var(--text-tertiary);">Request sent</span>
+        <a href="/friendships/withdraw/<%= friendship.id %>" class="btn btn--ghost btn--sm">Withdraw</a>
+      <% elsif friendship.pending? %>
+        <a href="/friends" class="btn btn--secondary btn--sm">Respond</a>
+      <% end %>
+    </div>
+  <% end %>
+</div>

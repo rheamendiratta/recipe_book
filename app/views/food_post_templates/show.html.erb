@@ -1,54 +1,60 @@
-<p><a href="/feed">← Feed</a></p>
+<a href="/feed" class="back-link">← Feed</a>
 
 <article>
-  <p>
-    <strong><a href="/users/<%= @post.user_id %>"><%= @post.user.display %></a></strong>
-    <small>— <%= time_ago_in_words(@post.created_at) %> ago</small>
-  </p>
+  <div style="display:flex; align-items:center; gap:var(--space-sm); margin-bottom:var(--space-md);">
+    <div class="feed-item__avatar"><%= @post.user.display.first.upcase %></div>
+    <div>
+      <a href="/users/<%= @post.user_id %>" style="font-weight:600; font-family:var(--font-ui);"><%= @post.user.display %></a>
+      <p class="text-sm"><%= time_ago_in_words(@post.created_at) %> ago</p>
+    </div>
+    <% if @post.user_id == current_user.id %>
+      <a href="/delete_food_post/<%= @post.id %>" class="btn btn--destructive btn--sm" style="margin-left:auto;" data-turbo-confirm="Delete this post?">Delete</a>
+    <% end %>
+  </div>
 
   <% if @post.photo.attached? %>
-    <%= image_tag url_for(@post.photo), style: "max-width:600px; display:block;" %>
+    <%= image_tag url_for(@post.photo), class: "card__photo card__photo--hero" %>
   <% elsif @post.photo_url.present? %>
-    <img src="<%= @post.photo_url %>" style="max-width:600px; display:block;" alt="food photo">
+    <img src="<%= @post.photo_url %>" class="card__photo card__photo--hero" alt="">
   <% end %>
 
-  <p><%= @post.caption %></p>
+  <p style="font-size:16px; margin-bottom:var(--space-sm);"><%= @post.caption %></p>
 
   <% if @post.recipe.present? %>
-    <p>Recipe: <a href="/recipes/<%= @post.recipe_id %>"><%= @post.recipe.title %></a></p>
+    <p class="text-sm">Recipe: <a href="/recipes/<%= @post.recipe_id %>"><%= @post.recipe.title %></a></p>
   <% end %>
 
-  <p>
+  <div style="display:flex; align-items:center; gap:var(--space-md); margin-top:var(--space-md);">
     <form action="/toggle_post_like/<%= @post.id %>" method="post" style="display:inline">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-      <button type="submit"><%= @liked ? "Unlike" : "Like" %></button>
+      <button type="submit" class="btn btn--secondary btn--sm"><%= @liked ? "♥ Unlike" : "♡ Like" %></button>
     </form>
-    <%= @like_count %> like<%= "s" if @like_count != 1 %>
-  </p>
-
-  <% if @post.user_id == current_user.id %>
-    <p>
-      <a href="/delete_food_post/<%= @post.id %>" data-turbo-confirm="Delete this post?">Delete post</a>
-    </p>
-  <% end %>
+    <span class="text-sm"><%= @like_count %> like<%= "s" if @like_count != 1 %></span>
+  </div>
 </article>
 
 <hr>
-<h3>Comments (<%= @comments.count %>)</h3>
-<% @comments.each do |comment| %>
-  <p>
-    <strong><a href="/users/<%= comment.user_id %>"><%= comment.user.display %></a></strong>:
-    <%= comment.comment_text %>
-    <small>— <%= time_ago_in_words(comment.created_at) %> ago</small>
-    <% if comment.user_id == current_user.id || @post.user_id == current_user.id %>
-      <a href="/delete_post_comment/<%= comment.id %>">delete</a>
-    <% end %>
-  </p>
-<% end %>
 
-<form action="/insert_post_comment" method="post">
+<div class="section-divider">Comments (<%= @comments.count %>)</div>
+
+<div style="margin-bottom:var(--space-lg);">
+  <% @comments.each do |comment| %>
+    <div class="comment-item">
+      <div>
+        <a href="/users/<%= comment.user_id %>" class="comment-author"><%= comment.user.display %></a>
+        <p class="comment-text"><%= comment.comment_text %></p>
+      </div>
+      <span class="comment-time"><%= time_ago_in_words(comment.created_at) %> ago</span>
+      <% if comment.user_id == current_user.id || @post.user_id == current_user.id %>
+        <a href="/delete_post_comment/<%= comment.id %>" class="btn btn--ghost btn--sm" style="font-size:11px;">✕</a>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<form action="/insert_post_comment" method="post" style="display:flex; gap:var(--space-sm); align-items:flex-start;">
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
   <input type="hidden" name="query_post_id" value="<%= @post.id %>">
-  <input type="text" name="query_comment_text" placeholder="Add a comment…" style="width:350px;" required>
-  <button type="submit">Comment</button>
+  <input type="text" name="query_comment_text" class="form-input" style="flex:1;" placeholder="Add a comment…" required>
+  <button type="submit" class="btn btn--secondary">Comment</button>
 </form>

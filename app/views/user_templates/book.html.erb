@@ -1,24 +1,37 @@
-<h1><%= @user.display %>'s Recipe Book</h1>
-<p><a href="/users/<%= @user.id %>">← Back to profile</a></p>
+<a href="/users/<%= @user.id %>" class="back-link">← <%= @user.display %></a>
+<div class="page-header">
+  <h1><%= @user.display %>'s Recipe Book</h1>
+</div>
 
 <% if @recipes.empty? %>
-  <p>No recipes in their book yet.</p>
+  <div class="empty-state"><p>No recipes in their book yet.</p></div>
 <% else %>
-  <% @recipes.each do |recipe| %>
-    <article style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-      <h3><a href="/recipes/<%= recipe.id %>"><%= recipe.title %></a></h3>
-      <p>
-        <small>
-          By <a href="/users/<%= recipe.creator_id %>"><%= recipe.creator.display %></a>
-          <% if recipe.total_time_min %> &bull; <%= recipe.total_time_display %><% end %>
-          <% if recipe.meal_type %> &bull; <%= recipe.meal_type_label %><% end %>
-          <% if recipe.diet_type %> &bull; <%= recipe.diet_type_label %><% end %>
-        </small>
-      </p>
-      <% entry = @entries.find { |e| e.recipe_id == recipe.id } %>
-      <% if entry&.has_cooked && entry.star_rating %>
-        <small>Rated: <%= "★" * entry.star_rating %><%= "☆" * (5 - entry.star_rating) %></small>
-      <% end %>
-    </article>
-  <% end %>
+  <div class="book-grid">
+    <% @recipes.each do |recipe| %>
+      <article class="book-item">
+        <% if recipe.photo.attached? %>
+          <%= image_tag url_for(recipe.photo), class: "book-item__thumb" %>
+        <% elsif recipe.photo_url.present? %>
+          <img src="<%= recipe.photo_url %>" class="book-item__thumb" alt="">
+        <% else %>
+          <div class="book-item__thumb-placeholder">🍳</div>
+        <% end %>
+        <div class="book-item__content">
+          <a href="/recipes/<%= recipe.id %>" class="book-item__title"><%= recipe.title %></a>
+          <div class="book-item__badges">
+            <% if recipe.total_time_min %><span class="recipe-meta__item"><%= recipe.total_time_display %></span><% end %>
+            <%= render partial: "shared/diet_badge", locals: { diet_type: recipe.diet_type } if recipe.diet_type.present? %>
+          </div>
+          <% entry = @entries.find { |e| e.recipe_id == recipe.id } %>
+          <% if entry&.has_cooked && entry.star_rating %>
+            <span class="stars">
+              <% (1..5).each do |n| %>
+                <span class="star <%= n <= entry.star_rating ? 'star--filled' : 'star--empty' %>">★</span>
+              <% end %>
+            </span>
+          <% end %>
+        </div>
+      </article>
+    <% end %>
+  </div>
 <% end %>
