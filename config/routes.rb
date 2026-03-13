@@ -1,254 +1,86 @@
 Rails.application.routes.draw do
-  # Routes for the Post like resource:
-
-  # CREATE
-  post("/insert_post_like", { :controller => "post_likes", :action => "create" })
-
-  # READ
-  get("/post_likes", { :controller => "post_likes", :action => "index" })
-
-  get("/post_likes/:path_id", { :controller => "post_likes", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_post_like/:path_id", { :controller => "post_likes", :action => "update" })
-
-  # DELETE
-  get("/delete_post_like/:path_id", { :controller => "post_likes", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Post comment resource:
-
-  # CREATE
-  post("/insert_post_comment", { :controller => "post_comments", :action => "create" })
-
-  # READ
-  get("/post_comments", { :controller => "post_comments", :action => "index" })
-
-  get("/post_comments/:path_id", { :controller => "post_comments", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_post_comment/:path_id", { :controller => "post_comments", :action => "update" })
-
-  # DELETE
-  get("/delete_post_comment/:path_id", { :controller => "post_comments", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Food post resource:
-
-  # CREATE
-  post("/insert_food_post", { :controller => "food_posts", :action => "create" })
-
-  # READ
-  get("/food_posts", { :controller => "food_posts", :action => "index" })
-
-  get("/food_posts/:path_id", { :controller => "food_posts", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_food_post/:path_id", { :controller => "food_posts", :action => "update" })
-
-  # DELETE
-  get("/delete_food_post/:path_id", { :controller => "food_posts", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe step resource:
-
-  # CREATE
-  post("/insert_recipe_step", { :controller => "recipe_steps", :action => "create" })
-
-  # READ
-  get("/recipe_steps", { :controller => "recipe_steps", :action => "index" })
-
-  get("/recipe_steps/:path_id", { :controller => "recipe_steps", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_step/:path_id", { :controller => "recipe_steps", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_step/:path_id", { :controller => "recipe_steps", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe list item resource:
-
-  # CREATE
-  post("/insert_recipe_list_item", { :controller => "recipe_list_items", :action => "create" })
-
-  # READ
-  get("/recipe_list_items", { :controller => "recipe_list_items", :action => "index" })
-
-  get("/recipe_list_items/:path_id", { :controller => "recipe_list_items", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_list_item/:path_id", { :controller => "recipe_list_items", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_list_item/:path_id", { :controller => "recipe_list_items", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe ingredient resource:
-
-  # CREATE
-  post("/insert_recipe_ingredient", { :controller => "recipe_ingredients", :action => "create" })
-
-  # READ
-  get("/recipe_ingredients", { :controller => "recipe_ingredients", :action => "index" })
-
-  get("/recipe_ingredients/:path_id", { :controller => "recipe_ingredients", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_ingredient/:path_id", { :controller => "recipe_ingredients", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_ingredient/:path_id", { :controller => "recipe_ingredients", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe component resource:
-
-  # CREATE
-  post("/insert_recipe_component", { :controller => "recipe_components", :action => "create" })
-
-  # READ
-  get("/recipe_components", { :controller => "recipe_components", :action => "index" })
-
-  get("/recipe_components/:path_id", { :controller => "recipe_components", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_component/:path_id", { :controller => "recipe_components", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_component/:path_id", { :controller => "recipe_components", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe comment resource:
-
-  # CREATE
-  post("/insert_recipe_comment", { :controller => "recipe_comments", :action => "create" })
-
-  # READ
-  get("/recipe_comments", { :controller => "recipe_comments", :action => "index" })
-
-  get("/recipe_comments/:path_id", { :controller => "recipe_comments", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_comment/:path_id", { :controller => "recipe_comments", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_comment/:path_id", { :controller => "recipe_comments", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe note resource:
-
-  # CREATE
-  post("/insert_recipe_note", { :controller => "recipe_notes", :action => "create" })
-
-  # READ
-  get("/recipe_notes", { :controller => "recipe_notes", :action => "index" })
-
-  get("/recipe_notes/:path_id", { :controller => "recipe_notes", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_note/:path_id", { :controller => "recipe_notes", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_note/:path_id", { :controller => "recipe_notes", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe book entry resource:
-
-  # CREATE
-  post("/insert_recipe_book_entry", { :controller => "recipe_book_entries", :action => "create" })
-
-  # READ
-  get("/recipe_book_entries", { :controller => "recipe_book_entries", :action => "index" })
-
-  get("/recipe_book_entries/:path_id", { :controller => "recipe_book_entries", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_book_entry/:path_id", { :controller => "recipe_book_entries", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_book_entry/:path_id", { :controller => "recipe_book_entries", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Recipe list resource:
-
-  # CREATE
-  post("/insert_recipe_list", { :controller => "recipe_lists", :action => "create" })
-
-  # READ
-  get("/recipe_lists", { :controller => "recipe_lists", :action => "index" })
-
-  get("/recipe_lists/:path_id", { :controller => "recipe_lists", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_recipe_list/:path_id", { :controller => "recipe_lists", :action => "update" })
-
-  # DELETE
-  get("/delete_recipe_list/:path_id", { :controller => "recipe_lists", :action => "destroy" })
-
-  #------------------------------
-
-  # Routes for the Friendship resource:
-
-  # CREATE
-  post("/insert_friendship", { :controller => "friendships", :action => "create" })
-
-  # READ
-  get("/friendships", { :controller => "friendships", :action => "index" })
-
-  get("/friendships/:path_id", { :controller => "friendships", :action => "show" })
-
-  # UPDATE
-
-  post("/modify_friendship/:path_id", { :controller => "friendships", :action => "update" })
-
-  # DELETE
-  get("/delete_friendship/:path_id", { :controller => "friendships", :action => "destroy" })
-
-  #------------------------------
-
   devise_for :users
-  # Routes for the Recipe resource:
 
-  # CREATE
-  post("/insert_recipe", { :controller => "recipes", :action => "create" })
+  root "feed#index"
 
-  # READ
-  get("/recipes", { :controller => "recipes", :action => "index" })
+  # Feed
+  get "/feed", to: "feed#index"
 
-  get("/recipes/:path_id", { :controller => "recipes", :action => "show" })
+  # My recipe book
+  get "/my_book", to: "recipe_book#index"
+  get "/my_book/search", to: "recipe_book#search"
 
-  # UPDATE
+  # Recipes
+  get  "/recipes/new",          to: "recipes#new"
+  get  "/recipes/import",       to: "recipes#import_form"
+  post "/recipes/import",       to: "recipes#import"
+  post "/insert_recipe",        to: "recipes#create"
+  get  "/recipes/:path_id",     to: "recipes#show"
+  post "/modify_recipe/:path_id", to: "recipes#update"
+  get  "/delete_recipe/:path_id", to: "recipes#destroy"
+  get  "/recipes/:path_id/cook",  to: "recipes#cook"
+  post "/recipes/:path_id/duplicate",    to: "recipes#duplicate"
+  post "/recipes/:path_id/save_to_book", to: "recipes#save_to_book"
+  post "/recipes/:path_id/estimate_nutrition", to: "recipes#estimate_nutrition"
 
-  post("/modify_recipe/:path_id", { :controller => "recipes", :action => "update" })
+  # Recipe book entry (cooked + rating)
+  post "/book_entry/:path_id/mark_cooked", to: "recipe_book_entries#mark_cooked"
+  post "/book_entry/:path_id/rate",        to: "recipe_book_entries#rate"
 
-  # DELETE
-  get("/delete_recipe/:path_id", { :controller => "recipes", :action => "destroy" })
+  # Recipe ingredients (managed inline via recipe, but keep CRUD)
+  post "/insert_recipe_ingredient",             to: "recipe_ingredients#create"
+  post "/modify_recipe_ingredient/:path_id",    to: "recipe_ingredients#update"
+  get  "/delete_recipe_ingredient/:path_id",    to: "recipe_ingredients#destroy"
 
-  #------------------------------
+  # Recipe components
+  post "/insert_recipe_component",             to: "recipe_components#create"
+  post "/modify_recipe_component/:path_id",    to: "recipe_components#update"
+  get  "/delete_recipe_component/:path_id",    to: "recipe_components#destroy"
 
-  # This is a blank app! Pick your first screen, build out the RCAV, and go from there. E.g.:
-  # get("/your_first_screen", { :controller => "pages", :action => "first" })
+  # Recipe steps
+  post "/insert_recipe_step",             to: "recipe_steps#create"
+  post "/modify_recipe_step/:path_id",    to: "recipe_steps#update"
+  get  "/delete_recipe_step/:path_id",    to: "recipe_steps#destroy"
 
-  root "recipes#index"
+  # Recipe notes
+  post "/insert_recipe_note",             to: "recipe_notes#create"
+  post "/modify_recipe_note/:path_id",    to: "recipe_notes#update"
+  get  "/delete_recipe_note/:path_id",    to: "recipe_notes#destroy"
+
+  # Recipe comments
+  post "/insert_recipe_comment",          to: "recipe_comments#create"
+  get  "/delete_recipe_comment/:path_id", to: "recipe_comments#destroy"
+
+  # Recipe lists
+  post "/insert_recipe_list",                      to: "recipe_lists#create"
+  get  "/recipe_lists",                            to: "recipe_lists#index"
+  get  "/recipe_lists/:path_id",                   to: "recipe_lists#show"
+  post "/modify_recipe_list/:path_id",             to: "recipe_lists#update"
+  get  "/delete_recipe_list/:path_id",             to: "recipe_lists#destroy"
+  post "/recipe_lists/:path_id/add/:recipe_id",    to: "recipe_list_items#create"
+  get  "/recipe_list_items/:path_id/remove",       to: "recipe_list_items#destroy"
+
+  # Friends
+  get  "/friends",                        to: "friendships#index"
+  get  "/users",                          to: "users#index"
+  get  "/users/:path_id",                 to: "users#show"
+  get  "/users/:path_id/book",            to: "users#book"
+  post "/friendships/request/:path_id",   to: "friendships#create"
+  post "/friendships/accept/:path_id",    to: "friendships#accept"
+  post "/friendships/decline/:path_id",   to: "friendships#decline"
+  get  "/friendships/withdraw/:path_id",  to: "friendships#withdraw"
+
+  # Food posts
+  get  "/posts/new",           to: "food_posts#new"
+  post "/insert_food_post",    to: "food_posts#create"
+  get  "/posts/:path_id",      to: "food_posts#show"
+  post "/modify_food_post/:path_id",  to: "food_posts#update"
+  get  "/delete_food_post/:path_id",  to: "food_posts#destroy"
+
+  # Post comments
+  post "/insert_post_comment",          to: "post_comments#create"
+  get  "/delete_post_comment/:path_id", to: "post_comments#destroy"
+
+  # Post likes
+  post "/toggle_post_like/:path_id",  to: "post_likes#toggle"
 end
