@@ -121,6 +121,7 @@ class Recipe < ApplicationRecord
   private
 
   def create_owner_book_entry
+    return if original_recipe_id.present?
     RecipeBookEntry.create!(user_id: creator_id, recipe_id: id, entry_type: "owned")
   end
 end

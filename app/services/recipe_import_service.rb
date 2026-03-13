@@ -57,7 +57,7 @@ class RecipeImportService
     text = doc.text.gsub(/\s+/, " ").strip[0..6000]
 
     client = Anthropic::Client.new(api_key: ENV["ANTHROPIC_API_KEY"])
-    response = client.messages(
+    response = client.messages.create(
       model: "claude-opus-4-6",
       max_tokens: 2000,
       messages: [{
