@@ -1,0 +1,96 @@
+<h1>
+  Recipe note #<%= @the_recipe_note.id %> details
+</h1>
+
+<article>
+  <div>
+    <a href="/recipe_notes">
+      Go back
+    </a>
+  </div>
+
+  <div>
+    <a href="/delete_recipe_note/<%= @the_recipe_note.id %>">
+      Delete recipe note
+    </a>
+  </div>
+  <dl>
+    <dt>
+      User
+    </dt>
+    <dd>
+      <%= @the_recipe_note.user_id %>
+    </dd>
+
+    <dt>
+      Recipe
+    </dt>
+    <dd>
+      <%= @the_recipe_note.recipe_id %>
+    </dd>
+
+    <dt>
+      Note text
+    </dt>
+    <dd>
+      <%= @the_recipe_note.note_text %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_recipe_note.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_recipe_note.updated_at) %> ago
+    </dd>
+  </dl>
+</article>
+
+<hr>
+
+
+<article>
+  <header>
+    <h2>
+      Edit recipe note
+    </h2>
+  </header>
+
+  <form action="/modify_recipe_note/<%= @the_recipe_note.id %>"  method="post" >
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_recipe_note.user_id %>">
+    </div>
+
+    <div>
+      <label for="recipe_id_box">
+        Recipe
+      </label>
+
+      <input type="text" id="recipe_id_box" name="query_recipe_id" value="<%= @the_recipe_note.recipe_id %>">
+    </div>
+
+    <div>
+      <label for="note_text_box">
+        Note text
+      </label>
+
+      <input type="text" id="note_text_box" name="query_note_text" value="<%= @the_recipe_note.note_text %>">
+    </div>
+
+    <button type="submit">
+      Update recipe note
+    </button>
+  </form>
+</article>
+
+<hr>

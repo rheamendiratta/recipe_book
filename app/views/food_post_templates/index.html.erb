@@ -1,0 +1,67 @@
+<h1>
+  List of all food posts
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new food post
+    </h2>
+  </header>
+
+  <form action="/insert_food_post" method="post">
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <div>
+      <label for="recipe_id_box">
+        Recipe
+      </label>
+
+      <input type="text" id="recipe_id_box" name="query_recipe_id">
+    </div>
+
+    <div>
+      <label for="photo_url_box">
+        Photo url
+      </label>
+
+      <input type="text" id="photo_url_box" name="query_photo_url">
+    </div>
+
+    <div>
+      <label for="caption_box">
+        Caption
+      </label>
+
+      <input type="text" id="caption_box" name="query_caption">
+    </div>
+
+    <button type="submit">
+      Create food post
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_food_posts.each do |a_food_post| %>
+      <li>
+        <a href="/food_posts/<%= a_food_post.id %>">
+          Food post #<%= a_food_post.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

@@ -1,0 +1,59 @@
+<h1>
+  List of all recipe notes
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new recipe note
+    </h2>
+  </header>
+
+  <form action="/insert_recipe_note" method="post">
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <div>
+      <label for="recipe_id_box">
+        Recipe
+      </label>
+
+      <input type="text" id="recipe_id_box" name="query_recipe_id">
+    </div>
+
+    <div>
+      <label for="note_text_box">
+        Note text
+      </label>
+
+      <input type="text" id="note_text_box" name="query_note_text">
+    </div>
+
+    <button type="submit">
+      Create recipe note
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_recipe_notes.each do |a_recipe_note| %>
+      <li>
+        <a href="/recipe_notes/<%= a_recipe_note.id %>">
+          Recipe note #<%= a_recipe_note.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

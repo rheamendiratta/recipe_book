@@ -1,0 +1,2 @@
+class RecipeNote < ApplicationRecord
+end

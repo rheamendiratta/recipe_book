@@ -1,0 +1,2 @@
+class RecipeBookEntry < ApplicationRecord
+end

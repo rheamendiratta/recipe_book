@@ -1,0 +1,75 @@
+<h1>
+  List of all recipe book entries
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new recipe book entry
+    </h2>
+  </header>
+
+  <form action="/insert_recipe_book_entry" method="post">
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <div>
+      <label for="recipe_id_box">
+        Recipe
+      </label>
+
+      <input type="text" id="recipe_id_box" name="query_recipe_id">
+    </div>
+
+    <div>
+      <label for="entry_type_box">
+        Entry type
+      </label>
+
+      <input type="text" id="entry_type_box" name="query_entry_type">
+    </div>
+
+    <div>
+      <label for="has_cooked_box">
+        Has cooked
+      </label>
+
+      <input type="text" id="has_cooked_box" name="query_has_cooked">
+    </div>
+
+    <div>
+      <label for="star_rating_box">
+        Star rating
+      </label>
+
+      <input type="text" id="star_rating_box" name="query_star_rating">
+    </div>
+
+    <button type="submit">
+      Create recipe book entry
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_recipe_book_entries.each do |a_recipe_book_entry| %>
+      <li>
+        <a href="/recipe_book_entries/<%= a_recipe_book_entry.id %>">
+          Recipe book entry #<%= a_recipe_book_entry.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

@@ -1,0 +1,2 @@
+class RecipeComponent < ApplicationRecord
+end

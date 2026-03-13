@@ -1,0 +1,187 @@
+<h1>
+  List of all recipes
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new recipe
+    </h2>
+  </header>
+
+  <form action="/insert_recipe" method="post">
+    <div>
+      <label for="creator_id_box">
+        Creator
+      </label>
+
+      <input type="text" id="creator_id_box" name="query_creator_id">
+    </div>
+
+    <div>
+      <label for="original_recipe_id_box">
+        Original recipe
+      </label>
+
+      <input type="text" id="original_recipe_id_box" name="query_original_recipe_id">
+    </div>
+
+    <div>
+      <label for="title_box">
+        Title
+      </label>
+
+      <input type="text" id="title_box" name="query_title">
+    </div>
+
+    <div>
+      <label for="description_box">
+        Description
+      </label>
+
+      <input type="text" id="description_box" name="query_description">
+    </div>
+
+    <div>
+      <label for="photo_url_box">
+        Photo url
+      </label>
+
+      <input type="text" id="photo_url_box" name="query_photo_url">
+    </div>
+
+    <div>
+      <label for="source_url_box">
+        Source url
+      </label>
+
+      <input type="text" id="source_url_box" name="query_source_url">
+    </div>
+
+    <div>
+      <label for="source_type_box">
+        Source type
+      </label>
+
+      <input type="text" id="source_type_box" name="query_source_type">
+    </div>
+
+    <div>
+      <label for="base_servings_box">
+        Base servings
+      </label>
+
+      <input type="text" id="base_servings_box" name="query_base_servings">
+    </div>
+
+    <div>
+      <label for="prep_time_min_box">
+        Prep time min
+      </label>
+
+      <input type="text" id="prep_time_min_box" name="query_prep_time_min">
+    </div>
+
+    <div>
+      <label for="cook_time_min_box">
+        Cook time min
+      </label>
+
+      <input type="text" id="cook_time_min_box" name="query_cook_time_min">
+    </div>
+
+    <div>
+      <label for="total_time_min_box">
+        Total time min
+      </label>
+
+      <input type="text" id="total_time_min_box" name="query_total_time_min">
+    </div>
+
+    <div>
+      <label for="diet_type_box">
+        Diet type
+      </label>
+
+      <input type="text" id="diet_type_box" name="query_diet_type">
+    </div>
+
+    <div>
+      <label for="meal_type_box">
+        Meal type
+      </label>
+
+      <input type="text" id="meal_type_box" name="query_meal_type">
+    </div>
+
+    <div>
+      <label for="est_calories_per_serving_box">
+        Est calories per serving
+      </label>
+
+      <input type="text" id="est_calories_per_serving_box" name="query_est_calories_per_serving">
+    </div>
+
+    <div>
+      <label for="est_carbs_g_per_serving_box">
+        Est carbs g per serving
+      </label>
+
+      <input type="text" id="est_carbs_g_per_serving_box" name="query_est_carbs_g_per_serving">
+    </div>
+
+    <div>
+      <label for="est_fat_g_per_serving_box">
+        Est fat g per serving
+      </label>
+
+      <input type="text" id="est_fat_g_per_serving_box" name="query_est_fat_g_per_serving">
+    </div>
+
+    <div>
+      <label for="est_protein_g_per_serving_box">
+        Est protein g per serving
+      </label>
+
+      <input type="text" id="est_protein_g_per_serving_box" name="query_est_protein_g_per_serving">
+    </div>
+
+    <div>
+      <label for="est_fibre_g_per_serving_box">
+        Est fibre g per serving
+      </label>
+
+      <input type="text" id="est_fibre_g_per_serving_box" name="query_est_fibre_g_per_serving">
+    </div>
+
+    <div>
+      <label for="nutrition_estimated_at_box">
+        Nutrition estimated at
+      </label>
+
+      <input type="datetime-local" id="nutrition_estimated_at_box" name="query_nutrition_estimated_at">
+    </div>
+
+    <button type="submit">
+      Create recipe
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_recipes.each do |a_recipe| %>
+      <li>
+        <a href="/recipes/<%= a_recipe.id %>">
+          Recipe #<%= a_recipe.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

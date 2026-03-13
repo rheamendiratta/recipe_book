@@ -1,0 +1,126 @@
+<h1>
+  Recipe book entry #<%= @the_recipe_book_entry.id %> details
+</h1>
+
+<article>
+  <div>
+    <a href="/recipe_book_entries">
+      Go back
+    </a>
+  </div>
+
+  <div>
+    <a href="/delete_recipe_book_entry/<%= @the_recipe_book_entry.id %>">
+      Delete recipe book entry
+    </a>
+  </div>
+  <dl>
+    <dt>
+      User
+    </dt>
+    <dd>
+      <%= @the_recipe_book_entry.user_id %>
+    </dd>
+
+    <dt>
+      Recipe
+    </dt>
+    <dd>
+      <%= @the_recipe_book_entry.recipe_id %>
+    </dd>
+
+    <dt>
+      Entry type
+    </dt>
+    <dd>
+      <%= @the_recipe_book_entry.entry_type %>
+    </dd>
+
+    <dt>
+      Has cooked
+    </dt>
+    <dd>
+      <%= @the_recipe_book_entry.has_cooked %>
+    </dd>
+
+    <dt>
+      Star rating
+    </dt>
+    <dd>
+      <%= @the_recipe_book_entry.star_rating %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_recipe_book_entry.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_recipe_book_entry.updated_at) %> ago
+    </dd>
+  </dl>
+</article>
+
+<hr>
+
+
+<article>
+  <header>
+    <h2>
+      Edit recipe book entry
+    </h2>
+  </header>
+
+  <form action="/modify_recipe_book_entry/<%= @the_recipe_book_entry.id %>"  method="post" >
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_recipe_book_entry.user_id %>">
+    </div>
+
+    <div>
+      <label for="recipe_id_box">
+        Recipe
+      </label>
+
+      <input type="text" id="recipe_id_box" name="query_recipe_id" value="<%= @the_recipe_book_entry.recipe_id %>">
+    </div>
+
+    <div>
+      <label for="entry_type_box">
+        Entry type
+      </label>
+
+      <input type="text" id="entry_type_box" name="query_entry_type" value="<%= @the_recipe_book_entry.entry_type %>">
+    </div>
+
+    <div>
+      <label for="has_cooked_box">
+        Has cooked
+      </label>
+
+      <input type="text" id="has_cooked_box" name="query_has_cooked" value="<%= @the_recipe_book_entry.has_cooked %>">
+    </div>
+
+    <div>
+      <label for="star_rating_box">
+        Star rating
+      </label>
+
+      <input type="text" id="star_rating_box" name="query_star_rating" value="<%= @the_recipe_book_entry.star_rating %>">
+    </div>
+
+    <button type="submit">
+      Update recipe book entry
+    </button>
+  </form>
+</article>
+
+<hr>

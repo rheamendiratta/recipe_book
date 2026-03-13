@@ -1,0 +1,51 @@
+<h1>
+  List of all recipe comments
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new recipe comment
+    </h2>
+  </header>
+
+  <form action="/insert_recipe_comment" method="post">
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <div>
+      <label for="recipe_id_box">
+        Recipe
+      </label>
+
+      <input type="text" id="recipe_id_box" name="query_recipe_id">
+    </div>
+
+    <button type="submit">
+      Create recipe comment
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_recipe_comments.each do |a_recipe_comment| %>
+      <li>
+        <a href="/recipe_comments/<%= a_recipe_comment.id %>">
+          Recipe comment #<%= a_recipe_comment.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

@@ -1,0 +1,337 @@
+<h1>
+  Recipe #<%= @the_recipe.id %> details
+</h1>
+
+<article>
+  <div>
+    <a href="/recipes">
+      Go back
+    </a>
+  </div>
+
+  <div>
+    <a href="/delete_recipe/<%= @the_recipe.id %>">
+      Delete recipe
+    </a>
+  </div>
+  <dl>
+    <dt>
+      Creator
+    </dt>
+    <dd>
+      <%= @the_recipe.creator_id %>
+    </dd>
+
+    <dt>
+      Original recipe
+    </dt>
+    <dd>
+      <%= @the_recipe.original_recipe_id %>
+    </dd>
+
+    <dt>
+      Title
+    </dt>
+    <dd>
+      <%= @the_recipe.title %>
+    </dd>
+
+    <dt>
+      Description
+    </dt>
+    <dd>
+      <%= @the_recipe.description %>
+    </dd>
+
+    <dt>
+      Photo url
+    </dt>
+    <dd>
+      <%= @the_recipe.photo_url %>
+    </dd>
+
+    <dt>
+      Source url
+    </dt>
+    <dd>
+      <%= @the_recipe.source_url %>
+    </dd>
+
+    <dt>
+      Source type
+    </dt>
+    <dd>
+      <%= @the_recipe.source_type %>
+    </dd>
+
+    <dt>
+      Base servings
+    </dt>
+    <dd>
+      <%= @the_recipe.base_servings %>
+    </dd>
+
+    <dt>
+      Prep time min
+    </dt>
+    <dd>
+      <%= @the_recipe.prep_time_min %>
+    </dd>
+
+    <dt>
+      Cook time min
+    </dt>
+    <dd>
+      <%= @the_recipe.cook_time_min %>
+    </dd>
+
+    <dt>
+      Total time min
+    </dt>
+    <dd>
+      <%= @the_recipe.total_time_min %>
+    </dd>
+
+    <dt>
+      Diet type
+    </dt>
+    <dd>
+      <%= @the_recipe.diet_type %>
+    </dd>
+
+    <dt>
+      Meal type
+    </dt>
+    <dd>
+      <%= @the_recipe.meal_type %>
+    </dd>
+
+    <dt>
+      Est calories per serving
+    </dt>
+    <dd>
+      <%= @the_recipe.est_calories_per_serving %>
+    </dd>
+
+    <dt>
+      Est carbs g per serving
+    </dt>
+    <dd>
+      <%= @the_recipe.est_carbs_g_per_serving %>
+    </dd>
+
+    <dt>
+      Est fat g per serving
+    </dt>
+    <dd>
+      <%= @the_recipe.est_fat_g_per_serving %>
+    </dd>
+
+    <dt>
+      Est protein g per serving
+    </dt>
+    <dd>
+      <%= @the_recipe.est_protein_g_per_serving %>
+    </dd>
+
+    <dt>
+      Est fibre g per serving
+    </dt>
+    <dd>
+      <%= @the_recipe.est_fibre_g_per_serving %>
+    </dd>
+
+    <dt>
+      Nutrition estimated at
+    </dt>
+    <dd>
+      <%= @the_recipe.nutrition_estimated_at %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_recipe.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_recipe.updated_at) %> ago
+    </dd>
+  </dl>
+</article>
+
+<hr>
+
+
+<article>
+  <header>
+    <h2>
+      Edit recipe
+    </h2>
+  </header>
+
+  <form action="/modify_recipe/<%= @the_recipe.id %>"  method="post" >
+    <div>
+      <label for="creator_id_box">
+        Creator
+      </label>
+
+      <input type="text" id="creator_id_box" name="query_creator_id" value="<%= @the_recipe.creator_id %>">
+    </div>
+
+    <div>
+      <label for="original_recipe_id_box">
+        Original recipe
+      </label>
+
+      <input type="text" id="original_recipe_id_box" name="query_original_recipe_id" value="<%= @the_recipe.original_recipe_id %>">
+    </div>
+
+    <div>
+      <label for="title_box">
+        Title
+      </label>
+
+      <input type="text" id="title_box" name="query_title" value="<%= @the_recipe.title %>">
+    </div>
+
+    <div>
+      <label for="description_box">
+        Description
+      </label>
+
+      <input type="text" id="description_box" name="query_description" value="<%= @the_recipe.description %>">
+    </div>
+
+    <div>
+      <label for="photo_url_box">
+        Photo url
+      </label>
+
+      <input type="text" id="photo_url_box" name="query_photo_url" value="<%= @the_recipe.photo_url %>">
+    </div>
+
+    <div>
+      <label for="source_url_box">
+        Source url
+      </label>
+
+      <input type="text" id="source_url_box" name="query_source_url" value="<%= @the_recipe.source_url %>">
+    </div>
+
+    <div>
+      <label for="source_type_box">
+        Source type
+      </label>
+
+      <input type="text" id="source_type_box" name="query_source_type" value="<%= @the_recipe.source_type %>">
+    </div>
+
+    <div>
+      <label for="base_servings_box">
+        Base servings
+      </label>
+
+      <input type="text" id="base_servings_box" name="query_base_servings" value="<%= @the_recipe.base_servings %>">
+    </div>
+
+    <div>
+      <label for="prep_time_min_box">
+        Prep time min
+      </label>
+
+      <input type="text" id="prep_time_min_box" name="query_prep_time_min" value="<%= @the_recipe.prep_time_min %>">
+    </div>
+
+    <div>
+      <label for="cook_time_min_box">
+        Cook time min
+      </label>
+
+      <input type="text" id="cook_time_min_box" name="query_cook_time_min" value="<%= @the_recipe.cook_time_min %>">
+    </div>
+
+    <div>
+      <label for="total_time_min_box">
+        Total time min
+      </label>
+
+      <input type="text" id="total_time_min_box" name="query_total_time_min" value="<%= @the_recipe.total_time_min %>">
+    </div>
+
+    <div>
+      <label for="diet_type_box">
+        Diet type
+      </label>
+
+      <input type="text" id="diet_type_box" name="query_diet_type" value="<%= @the_recipe.diet_type %>">
+    </div>
+
+    <div>
+      <label for="meal_type_box">
+        Meal type
+      </label>
+
+      <input type="text" id="meal_type_box" name="query_meal_type" value="<%= @the_recipe.meal_type %>">
+    </div>
+
+    <div>
+      <label for="est_calories_per_serving_box">
+        Est calories per serving
+      </label>
+
+      <input type="text" id="est_calories_per_serving_box" name="query_est_calories_per_serving" value="<%= @the_recipe.est_calories_per_serving %>">
+    </div>
+
+    <div>
+      <label for="est_carbs_g_per_serving_box">
+        Est carbs g per serving
+      </label>
+
+      <input type="text" id="est_carbs_g_per_serving_box" name="query_est_carbs_g_per_serving" value="<%= @the_recipe.est_carbs_g_per_serving %>">
+    </div>
+
+    <div>
+      <label for="est_fat_g_per_serving_box">
+        Est fat g per serving
+      </label>
+
+      <input type="text" id="est_fat_g_per_serving_box" name="query_est_fat_g_per_serving" value="<%= @the_recipe.est_fat_g_per_serving %>">
+    </div>
+
+    <div>
+      <label for="est_protein_g_per_serving_box">
+        Est protein g per serving
+      </label>
+
+      <input type="text" id="est_protein_g_per_serving_box" name="query_est_protein_g_per_serving" value="<%= @the_recipe.est_protein_g_per_serving %>">
+    </div>
+
+    <div>
+      <label for="est_fibre_g_per_serving_box">
+        Est fibre g per serving
+      </label>
+
+      <input type="text" id="est_fibre_g_per_serving_box" name="query_est_fibre_g_per_serving" value="<%= @the_recipe.est_fibre_g_per_serving %>">
+    </div>
+
+    <div>
+      <label for="nutrition_estimated_at_box">
+        Nutrition estimated at
+      </label>
+
+      <input type="datetime-local" id="nutrition_estimated_at_box" name="query_nutrition_estimated_at"
+         value="<%= @the_recipe.nutrition_estimated_at %>">
+    </div>
+
+    <button type="submit">
+      Update recipe
+    </button>
+  </form>
+</article>
+
+<hr>

@@ -1,0 +1,59 @@
+<h1>
+  List of all post comments
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new post comment
+    </h2>
+  </header>
+
+  <form action="/insert_post_comment" method="post">
+    <div>
+      <label for="post_id_box">
+        Post
+      </label>
+
+      <input type="text" id="post_id_box" name="query_post_id">
+    </div>
+
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <div>
+      <label for="comment_text_box">
+        Comment text
+      </label>
+
+      <input type="text" id="comment_text_box" name="query_comment_text">
+    </div>
+
+    <button type="submit">
+      Create post comment
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_post_comments.each do |a_post_comment| %>
+      <li>
+        <a href="/post_comments/<%= a_post_comment.id %>">
+          Post comment #<%= a_post_comment.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

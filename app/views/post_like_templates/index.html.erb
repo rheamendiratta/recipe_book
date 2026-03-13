@@ -1,0 +1,51 @@
+<h1>
+  List of all post likes
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new post like
+    </h2>
+  </header>
+
+  <form action="/insert_post_like" method="post">
+    <div>
+      <label for="post_id_box">
+        Post
+      </label>
+
+      <input type="text" id="post_id_box" name="query_post_id">
+    </div>
+
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <button type="submit">
+      Create post like
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_post_likes.each do |a_post_like| %>
+      <li>
+        <a href="/post_likes/<%= a_post_like.id %>">
+          Post like #<%= a_post_like.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

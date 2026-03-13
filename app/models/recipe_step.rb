@@ -1,0 +1,2 @@
+class RecipeStep < ApplicationRecord
+end

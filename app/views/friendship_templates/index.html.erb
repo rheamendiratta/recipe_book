@@ -1,0 +1,59 @@
+<h1>
+  List of all friendships
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new friendship
+    </h2>
+  </header>
+
+  <form action="/insert_friendship" method="post">
+    <div>
+      <label for="requester_id_box">
+        Requester
+      </label>
+
+      <input type="text" id="requester_id_box" name="query_requester_id">
+    </div>
+
+    <div>
+      <label for="addressee_id_box">
+        Addressee
+      </label>
+
+      <input type="text" id="addressee_id_box" name="query_addressee_id">
+    </div>
+
+    <div>
+      <label for="status_box">
+        Status
+      </label>
+
+      <input type="text" id="status_box" name="query_status">
+    </div>
+
+    <button type="submit">
+      Create friendship
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_friendships.each do |a_friendship| %>
+      <li>
+        <a href="/friendships/<%= a_friendship.id %>">
+          Friendship #<%= a_friendship.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

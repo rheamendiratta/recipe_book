@@ -1,0 +1,51 @@
+<h1>
+  List of all recipe lists
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new recipe list
+    </h2>
+  </header>
+
+  <form action="/insert_recipe_list" method="post">
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <div>
+      <label for="name_box">
+        Name
+      </label>
+
+      <input type="text" id="name_box" name="query_name">
+    </div>
+
+    <button type="submit">
+      Create recipe list
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_recipe_lists.each do |a_recipe_list| %>
+      <li>
+        <a href="/recipe_lists/<%= a_recipe_list.id %>">
+          Recipe list #<%= a_recipe_list.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

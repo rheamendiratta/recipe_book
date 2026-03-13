@@ -1,0 +1,96 @@
+<h1>
+  Post comment #<%= @the_post_comment.id %> details
+</h1>
+
+<article>
+  <div>
+    <a href="/post_comments">
+      Go back
+    </a>
+  </div>
+
+  <div>
+    <a href="/delete_post_comment/<%= @the_post_comment.id %>">
+      Delete post comment
+    </a>
+  </div>
+  <dl>
+    <dt>
+      Post
+    </dt>
+    <dd>
+      <%= @the_post_comment.post_id %>
+    </dd>
+
+    <dt>
+      User
+    </dt>
+    <dd>
+      <%= @the_post_comment.user_id %>
+    </dd>
+
+    <dt>
+      Comment text
+    </dt>
+    <dd>
+      <%= @the_post_comment.comment_text %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_post_comment.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_post_comment.updated_at) %> ago
+    </dd>
+  </dl>
+</article>
+
+<hr>
+
+
+<article>
+  <header>
+    <h2>
+      Edit post comment
+    </h2>
+  </header>
+
+  <form action="/modify_post_comment/<%= @the_post_comment.id %>"  method="post" >
+    <div>
+      <label for="post_id_box">
+        Post
+      </label>
+
+      <input type="text" id="post_id_box" name="query_post_id" value="<%= @the_post_comment.post_id %>">
+    </div>
+
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_post_comment.user_id %>">
+    </div>
+
+    <div>
+      <label for="comment_text_box">
+        Comment text
+      </label>
+
+      <input type="text" id="comment_text_box" name="query_comment_text" value="<%= @the_post_comment.comment_text %>">
+    </div>
+
+    <button type="submit">
+      Update post comment
+    </button>
+  </form>
+</article>
+
+<hr>
