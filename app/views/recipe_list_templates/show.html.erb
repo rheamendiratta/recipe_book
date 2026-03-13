@@ -1,81 +1,24 @@
-<h1>
-  Recipe list #<%= @the_recipe_list.id %> details
-</h1>
+<h1><%= @list.name %></h1>
+<p><a href="/recipe_lists">← My Lists</a></p>
 
-<article>
-  <div>
-    <a href="/recipe_lists">
-      Go back
-    </a>
-  </div>
-
-  <div>
-    <a href="/delete_recipe_list/<%= @the_recipe_list.id %>">
-      Delete recipe list
-    </a>
-  </div>
-  <dl>
-    <dt>
-      User
-    </dt>
-    <dd>
-      <%= @the_recipe_list.user_id %>
-    </dd>
-
-    <dt>
-      Name
-    </dt>
-    <dd>
-      <%= @the_recipe_list.name %>
-    </dd>
-
-    <dt>
-      Created at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_recipe_list.created_at) %> ago
-    </dd>
-
-    <dt>
-      Updated at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_recipe_list.updated_at) %> ago
-    </dd>
-  </dl>
-</article>
+<form action="/modify_recipe_list/<%= @list.id %>" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <input type="text" name="query_name" value="<%= @list.name %>" style="width:250px;" required>
+  <button type="submit">Rename</button>
+</form>
 
 <hr>
 
+<% if @items.empty? %>
+  <p>No recipes in this list yet. <a href="/my_book">Browse your book</a> to add some.</p>
+<% end %>
 
-<article>
-  <header>
-    <h2>
-      Edit recipe list
-    </h2>
-  </header>
-
-  <form action="/modify_recipe_list/<%= @the_recipe_list.id %>"  method="post" >
-    <div>
-      <label for="user_id_box">
-        User
-      </label>
-
-      <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_recipe_list.user_id %>">
-    </div>
-
-    <div>
-      <label for="name_box">
-        Name
-      </label>
-
-      <input type="text" id="name_box" name="query_name" value="<%= @the_recipe_list.name %>">
-    </div>
-
-    <button type="submit">
-      Update recipe list
-    </button>
-  </form>
-</article>
-
-<hr>
+<% @items.each do |item| %>
+  <% recipe = item.recipe %>
+  <article style="border:1px solid #ccc; padding:8px; margin-bottom:8px;">
+    <a href="/recipes/<%= recipe.id %>"><strong><%= recipe.title %></strong></a>
+    <% if recipe.total_time_min %><small> — <%= recipe.total_time_display %></small><% end %>
+    &nbsp;|&nbsp;
+    <a href="/recipe_list_items/<%= item.id %>/remove">Remove from list</a>
+  </article>
+<% end %>

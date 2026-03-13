@@ -1,0 +1,24 @@
+<h1>Find People</h1>
+
+<% @users.each do |user| %>
+  <article style="border:1px solid #ccc; padding:8px; margin-bottom:8px;">
+    <strong><a href="/users/<%= user.id %>"><%= user.display %></a></strong>
+    &nbsp;
+    <% friendship = @friendships[user.id] %>
+    <% if friendship.nil? %>
+      <form action="/friendships/request/<%= user.id %>" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit">Send Friend Request</button>
+      </form>
+    <% elsif friendship.accepted? %>
+      <em>Friends</em> | <a href="/users/<%= user.id %>/book">View their book</a>
+    <% elsif friendship.pending? && friendship.requester_id == current_user.id %>
+      <em>Request sent</em>
+      <a href="/friendships/withdraw/<%= friendship.id %>">Withdraw</a>
+    <% elsif friendship.pending? %>
+      <em>Sent you a request</em> — <a href="/friends">Respond</a>
+    <% elsif friendship.declined? %>
+      <em>Not connected</em>
+    <% end %>
+  </article>
+<% end %>

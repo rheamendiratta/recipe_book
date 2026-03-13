@@ -1,0 +1,63 @@
+<h1>Feed</h1>
+
+<% if @feed_items.empty? %>
+  <p>Nothing here yet. Add friends to see their activity!</p>
+<% end %>
+
+<% @feed_items.each do |item| %>
+  <article style="border:1px solid #ccc; padding:10px; margin-bottom:16px;">
+    <% if item.is_a?(FoodPost) %>
+      <%# ---- FOOD POST ---- %>
+      <p>
+        <strong><a href="/users/<%= item.user_id %>"><%= item.user.display %></a></strong>
+        posted a photo
+        <small>— <%= time_ago_in_words(item.created_at) %> ago</small>
+      </p>
+      <% if item.photo.attached? %>
+        <%= image_tag url_for(item.photo), style: "max-width:400px; display:block;" %>
+      <% elsif item.photo_url.present? %>
+        <img src="<%= item.photo_url %>" style="max-width:400px; display:block;" alt="food photo">
+      <% end %>
+      <p><%= item.caption %></p>
+      <% if item.recipe.present? %>
+        <p>Recipe: <a href="/recipes/<%= item.recipe_id %>"><%= item.recipe.title %></a></p>
+      <% end %>
+      <p>
+        <form action="/toggle_post_like/<%= item.id %>" method="post" style="display:inline">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit">
+            <% if item.post_likes.any? { |l| l.user_id == current_user.id } %>
+              Unlike
+            <% else %>
+              Like
+            <% end %>
+          </button>
+        </form>
+        <%= item.post_likes.count %> like<%= "s" if item.post_likes.count != 1 %>
+        &nbsp;|&nbsp;
+        <a href="/posts/<%= item.id %>"><%= item.post_comments.count %> comment<%= "s" if item.post_comments.count != 1 %></a>
+      </p>
+
+    <% elsif item.is_a?(RecipeBookEntry) %>
+      <%# ---- RECIPE BOOK ENTRY ---- %>
+      <% recipe = item.recipe %>
+      <% next unless recipe %>
+      <p>
+        <strong><a href="/users/<%= item.user_id %>"><%= item.user.display rescue "User" %></a></strong>
+        <% case item.entry_type %>
+        <% when "owned" %> created a new recipe
+        <% when "saved" %> saved a recipe
+        <% when "duplicated" %> duplicated a recipe
+        <% end %>
+        <small>— <%= time_ago_in_words(item.created_at) %> ago</small>
+      </p>
+      <% if recipe.photo_url.present? %>
+        <img src="<%= recipe.photo_url %>" style="max-width:200px; display:block;" alt="recipe photo">
+      <% end %>
+      <p><a href="/recipes/<%= recipe.id %>"><strong><%= recipe.title %></strong></a></p>
+      <% if recipe.total_time_min.present? %>
+        <small><%= recipe.total_time_display %> &bull; <%= recipe.meal_type_label %> &bull; <%= recipe.diet_type_label %></small>
+      <% end %>
+    <% end %>
+  </article>
+<% end %>

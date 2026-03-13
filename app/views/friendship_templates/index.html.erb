@@ -1,59 +1,44 @@
-<h1>
-  List of all friendships
-</h1>
+<h1>Friends</h1>
 
-<hr>
+<% if @pending_received.any? %>
+  <h3>Pending Requests (<%= @pending_received.count %>)</h3>
+  <% @pending_received.each do |f| %>
+    <p>
+      <strong><a href="/users/<%= f.requester_id %>"><%= f.requester.display %></a></strong> sent you a friend request.
+      <form action="/friendships/accept/<%= f.id %>" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit">Accept</button>
+      </form>
+      <form action="/friendships/decline/<%= f.id %>" method="post" style="display:inline">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit">Decline</button>
+      </form>
+    </p>
+  <% end %>
+  <hr>
+<% end %>
 
-<article>
-  <header>
-    <h2>
-      Add a new friendship
-    </h2>
-  </header>
+<% if @pending_sent.any? %>
+  <h3>Sent Requests</h3>
+  <% @pending_sent.each do |f| %>
+    <p>
+      Waiting on <strong><a href="/users/<%= f.addressee_id %>"><%= f.addressee.display %></a></strong>
+      &nbsp;—&nbsp;
+      <a href="/friendships/withdraw/<%= f.id %>">Withdraw</a>
+    </p>
+  <% end %>
+  <hr>
+<% end %>
 
-  <form action="/insert_friendship" method="post">
-    <div>
-      <label for="requester_id_box">
-        Requester
-      </label>
-
-      <input type="text" id="requester_id_box" name="query_requester_id">
-    </div>
-
-    <div>
-      <label for="addressee_id_box">
-        Addressee
-      </label>
-
-      <input type="text" id="addressee_id_box" name="query_addressee_id">
-    </div>
-
-    <div>
-      <label for="status_box">
-        Status
-      </label>
-
-      <input type="text" id="status_box" name="query_status">
-    </div>
-
-    <button type="submit">
-      Create friendship
-    </button>
-  </form>
-</article>
-
-<hr>
-
-<article>
-  <ul>
-    <% @list_of_friendships.each do |a_friendship| %>
-      <li>
-        <a href="/friendships/<%= a_friendship.id %>">
-          Friendship #<%= a_friendship.id %>
-        </a>
-      </li>
-    <% end %>
-  </ul>
-</article>
-
-<hr>
+<h3>Your Friends (<%= @friends.count %>)</h3>
+<% if @friends.empty? %>
+  <p>No friends yet. <a href="/users">Find people</a> to add.</p>
+<% else %>
+  <% @friends.each do |friend| %>
+    <p>
+      <strong><a href="/users/<%= friend.id %>"><%= friend.display %></a></strong>
+      &nbsp;|&nbsp;
+      <a href="/users/<%= friend.id %>/book">View their recipe book</a>
+    </p>
+  <% end %>
+<% end %>

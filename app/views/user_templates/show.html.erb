@@ -1,0 +1,51 @@
+<h1><%= @user.display %></h1>
+<p><small><%= @user.email %></small></p>
+
+<%# Friendship status %>
+<% if @user == current_user %>
+  <p><em>This is you.</em> <a href="/users/edit">Edit profile</a></p>
+<% elsif @friendship.nil? %>
+  <form action="/friendships/request/<%= @user.id %>" method="post">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <button type="submit">Send Friend Request</button>
+  </form>
+<% elsif @friendship.accepted? %>
+  <p><em>You are friends.</em>
+    <a href="/users/<%= @user.id %>/book">View their recipe book</a>
+  </p>
+<% elsif @friendship.pending? && @friendship.requester_id == current_user.id %>
+  <p><em>Friend request sent.</em>
+    <a href="/friendships/withdraw/<%= @friendship.id %>">Withdraw</a>
+  </p>
+<% elsif @friendship.pending? %>
+  <p>
+    <em>This person sent you a friend request.</em>
+    <form action="/friendships/accept/<%= @friendship.id %>" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit">Accept</button>
+    </form>
+    <form action="/friendships/decline/<%= @friendship.id %>" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit">Decline</button>
+    </form>
+  </p>
+<% end %>
+
+<% if @recent_posts %>
+  <h3>Recent Posts</h3>
+  <% if @recent_posts.empty? %>
+    <p>No posts yet.</p>
+  <% end %>
+  <% @recent_posts.each do |post| %>
+    <article style="display:inline-block; vertical-align:top; margin:8px; border:1px solid #ccc; padding:8px; width:180px;">
+      <a href="/posts/<%= post.id %>">
+        <% if post.photo.attached? %>
+          <%= image_tag url_for(post.photo), style: "width:160px; height:120px; object-fit:cover;" %>
+        <% elsif post.photo_url.present? %>
+          <img src="<%= post.photo_url %>" style="width:160px; height:120px; object-fit:cover;" alt="">
+        <% end %>
+        <p><small><%= post.caption.truncate(60) %></small></p>
+      </a>
+    </article>
+  <% end %>
+<% end %>

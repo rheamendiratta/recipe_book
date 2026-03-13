@@ -1,51 +1,22 @@
-<h1>
-  List of all recipe lists
-</h1>
+<h1>My Recipe Lists</h1>
+
+<form action="/insert_recipe_list" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <input type="text" name="query_name" placeholder="New list name…" required style="width:250px;">
+  <button type="submit">Create List</button>
+</form>
 
 <hr>
 
-<article>
-  <header>
-    <h2>
-      Add a new recipe list
-    </h2>
-  </header>
+<% if @lists.empty? %>
+  <p>No lists yet. Create one above to organise your recipes.</p>
+<% end %>
 
-  <form action="/insert_recipe_list" method="post">
-    <div>
-      <label for="user_id_box">
-        User
-      </label>
-
-      <input type="text" id="user_id_box" name="query_user_id">
-    </div>
-
-    <div>
-      <label for="name_box">
-        Name
-      </label>
-
-      <input type="text" id="name_box" name="query_name">
-    </div>
-
-    <button type="submit">
-      Create recipe list
-    </button>
-  </form>
-</article>
-
-<hr>
-
-<article>
-  <ul>
-    <% @list_of_recipe_lists.each do |a_recipe_list| %>
-      <li>
-        <a href="/recipe_lists/<%= a_recipe_list.id %>">
-          Recipe list #<%= a_recipe_list.id %>
-        </a>
-      </li>
-    <% end %>
-  </ul>
-</article>
-
-<hr>
+<% @lists.each do |list| %>
+  <article style="border:1px solid #ccc; padding:8px; margin-bottom:8px;">
+    <strong><a href="/recipe_lists/<%= list.id %>"><%= list.name %></a></strong>
+    &nbsp;<small>(<%= list.recipe_list_items.count %> recipes)</small>
+    &nbsp;|&nbsp;
+    <a href="/delete_recipe_list/<%= list.id %>" data-turbo-confirm="Delete this list?">delete</a>
+  </article>
+<% end %>

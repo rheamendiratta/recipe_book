@@ -1,337 +1,371 @@
-<h1>
-  Recipe #<%= @the_recipe.id %> details
-</h1>
-
-<article>
-  <div>
-    <a href="/recipes">
-      Go back
-    </a>
-  </div>
-
-  <div>
-    <a href="/delete_recipe/<%= @the_recipe.id %>">
-      Delete recipe
-    </a>
-  </div>
-  <dl>
-    <dt>
-      Creator
-    </dt>
-    <dd>
-      <%= @the_recipe.creator_id %>
-    </dd>
-
-    <dt>
-      Original recipe
-    </dt>
-    <dd>
-      <%= @the_recipe.original_recipe_id %>
-    </dd>
-
-    <dt>
-      Title
-    </dt>
-    <dd>
-      <%= @the_recipe.title %>
-    </dd>
-
-    <dt>
-      Description
-    </dt>
-    <dd>
-      <%= @the_recipe.description %>
-    </dd>
-
-    <dt>
-      Photo url
-    </dt>
-    <dd>
-      <%= @the_recipe.photo_url %>
-    </dd>
-
-    <dt>
-      Source url
-    </dt>
-    <dd>
-      <%= @the_recipe.source_url %>
-    </dd>
-
-    <dt>
-      Source type
-    </dt>
-    <dd>
-      <%= @the_recipe.source_type %>
-    </dd>
-
-    <dt>
-      Base servings
-    </dt>
-    <dd>
-      <%= @the_recipe.base_servings %>
-    </dd>
-
-    <dt>
-      Prep time min
-    </dt>
-    <dd>
-      <%= @the_recipe.prep_time_min %>
-    </dd>
-
-    <dt>
-      Cook time min
-    </dt>
-    <dd>
-      <%= @the_recipe.cook_time_min %>
-    </dd>
-
-    <dt>
-      Total time min
-    </dt>
-    <dd>
-      <%= @the_recipe.total_time_min %>
-    </dd>
-
-    <dt>
-      Diet type
-    </dt>
-    <dd>
-      <%= @the_recipe.diet_type %>
-    </dd>
-
-    <dt>
-      Meal type
-    </dt>
-    <dd>
-      <%= @the_recipe.meal_type %>
-    </dd>
-
-    <dt>
-      Est calories per serving
-    </dt>
-    <dd>
-      <%= @the_recipe.est_calories_per_serving %>
-    </dd>
-
-    <dt>
-      Est carbs g per serving
-    </dt>
-    <dd>
-      <%= @the_recipe.est_carbs_g_per_serving %>
-    </dd>
-
-    <dt>
-      Est fat g per serving
-    </dt>
-    <dd>
-      <%= @the_recipe.est_fat_g_per_serving %>
-    </dd>
-
-    <dt>
-      Est protein g per serving
-    </dt>
-    <dd>
-      <%= @the_recipe.est_protein_g_per_serving %>
-    </dd>
-
-    <dt>
-      Est fibre g per serving
-    </dt>
-    <dd>
-      <%= @the_recipe.est_fibre_g_per_serving %>
-    </dd>
-
-    <dt>
-      Nutrition estimated at
-    </dt>
-    <dd>
-      <%= @the_recipe.nutrition_estimated_at %>
-    </dd>
-
-    <dt>
-      Created at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_recipe.created_at) %> ago
-    </dd>
-
-    <dt>
-      Updated at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_recipe.updated_at) %> ago
-    </dd>
-  </dl>
-</article>
-
-<hr>
-
-
-<article>
-  <header>
-    <h2>
-      Edit recipe
-    </h2>
-  </header>
-
-  <form action="/modify_recipe/<%= @the_recipe.id %>"  method="post" >
-    <div>
-      <label for="creator_id_box">
-        Creator
-      </label>
-
-      <input type="text" id="creator_id_box" name="query_creator_id" value="<%= @the_recipe.creator_id %>">
-    </div>
-
-    <div>
-      <label for="original_recipe_id_box">
-        Original recipe
-      </label>
-
-      <input type="text" id="original_recipe_id_box" name="query_original_recipe_id" value="<%= @the_recipe.original_recipe_id %>">
-    </div>
-
-    <div>
-      <label for="title_box">
-        Title
-      </label>
-
-      <input type="text" id="title_box" name="query_title" value="<%= @the_recipe.title %>">
-    </div>
-
-    <div>
-      <label for="description_box">
-        Description
-      </label>
-
-      <input type="text" id="description_box" name="query_description" value="<%= @the_recipe.description %>">
-    </div>
-
-    <div>
-      <label for="photo_url_box">
-        Photo url
-      </label>
-
-      <input type="text" id="photo_url_box" name="query_photo_url" value="<%= @the_recipe.photo_url %>">
-    </div>
-
-    <div>
-      <label for="source_url_box">
-        Source url
-      </label>
-
-      <input type="text" id="source_url_box" name="query_source_url" value="<%= @the_recipe.source_url %>">
-    </div>
-
-    <div>
-      <label for="source_type_box">
-        Source type
-      </label>
-
-      <input type="text" id="source_type_box" name="query_source_type" value="<%= @the_recipe.source_type %>">
-    </div>
-
-    <div>
-      <label for="base_servings_box">
-        Base servings
-      </label>
-
-      <input type="text" id="base_servings_box" name="query_base_servings" value="<%= @the_recipe.base_servings %>">
-    </div>
-
-    <div>
-      <label for="prep_time_min_box">
-        Prep time min
-      </label>
-
-      <input type="text" id="prep_time_min_box" name="query_prep_time_min" value="<%= @the_recipe.prep_time_min %>">
-    </div>
-
-    <div>
-      <label for="cook_time_min_box">
-        Cook time min
-      </label>
-
-      <input type="text" id="cook_time_min_box" name="query_cook_time_min" value="<%= @the_recipe.cook_time_min %>">
-    </div>
-
-    <div>
-      <label for="total_time_min_box">
-        Total time min
-      </label>
-
-      <input type="text" id="total_time_min_box" name="query_total_time_min" value="<%= @the_recipe.total_time_min %>">
-    </div>
-
-    <div>
-      <label for="diet_type_box">
-        Diet type
-      </label>
-
-      <input type="text" id="diet_type_box" name="query_diet_type" value="<%= @the_recipe.diet_type %>">
-    </div>
-
-    <div>
-      <label for="meal_type_box">
-        Meal type
-      </label>
-
-      <input type="text" id="meal_type_box" name="query_meal_type" value="<%= @the_recipe.meal_type %>">
-    </div>
-
-    <div>
-      <label for="est_calories_per_serving_box">
-        Est calories per serving
-      </label>
-
-      <input type="text" id="est_calories_per_serving_box" name="query_est_calories_per_serving" value="<%= @the_recipe.est_calories_per_serving %>">
-    </div>
-
-    <div>
-      <label for="est_carbs_g_per_serving_box">
-        Est carbs g per serving
-      </label>
-
-      <input type="text" id="est_carbs_g_per_serving_box" name="query_est_carbs_g_per_serving" value="<%= @the_recipe.est_carbs_g_per_serving %>">
-    </div>
-
-    <div>
-      <label for="est_fat_g_per_serving_box">
-        Est fat g per serving
-      </label>
-
-      <input type="text" id="est_fat_g_per_serving_box" name="query_est_fat_g_per_serving" value="<%= @the_recipe.est_fat_g_per_serving %>">
-    </div>
-
-    <div>
-      <label for="est_protein_g_per_serving_box">
-        Est protein g per serving
-      </label>
-
-      <input type="text" id="est_protein_g_per_serving_box" name="query_est_protein_g_per_serving" value="<%= @the_recipe.est_protein_g_per_serving %>">
-    </div>
-
-    <div>
-      <label for="est_fibre_g_per_serving_box">
-        Est fibre g per serving
-      </label>
-
-      <input type="text" id="est_fibre_g_per_serving_box" name="query_est_fibre_g_per_serving" value="<%= @the_recipe.est_fibre_g_per_serving %>">
-    </div>
-
-    <div>
-      <label for="nutrition_estimated_at_box">
-        Nutrition estimated at
-      </label>
-
-      <input type="datetime-local" id="nutrition_estimated_at_box" name="query_nutrition_estimated_at"
-         value="<%= @the_recipe.nutrition_estimated_at %>">
-    </div>
-
-    <button type="submit">
-      Update recipe
-    </button>
+<% content_for :head do %>
+  <meta name="turbo-cache-control" content="no-cache">
+<% end %>
+
+<p><a href="/my_book">← My Book</a></p>
+
+<% is_creator = @recipe.creator_id == current_user.id %>
+<% in_book = @entry.present? %>
+
+<% if @recipe.photo_url.present? %>
+  <img src="<%= @recipe.photo_url %>" style="max-width:500px; display:block;" alt="recipe photo">
+<% end %>
+
+<h1><%= @recipe.title %></h1>
+
+<p>
+  By <a href="/users/<%= @recipe.creator_id %>"><%= @recipe.creator.display %></a>
+  <% if @recipe.original_recipe_id.present? %>
+    &nbsp;(originally from <a href="/recipes/<%= @recipe.original_recipe_id %>">another recipe</a>)
+  <% end %>
+</p>
+
+<p>
+  <% if @recipe.meal_type.present? %><strong><%= @recipe.meal_type_label %></strong> &bull; <% end %>
+  <% if @recipe.diet_type.present? %><span><%= @recipe.diet_type_label %></span> &bull; <% end %>
+  <% if @recipe.base_servings.present? %><%= @recipe.base_servings %> servings<% end %>
+</p>
+
+<% if @recipe.prep_time_min || @recipe.cook_time_min || @recipe.total_time_min %>
+  <p>
+    <% if @recipe.prep_time_min %><strong>Prep:</strong> <%= @recipe.prep_time_min %> min &nbsp;<% end %>
+    <% if @recipe.cook_time_min %><strong>Cook:</strong> <%= @recipe.cook_time_min %> min &nbsp;<% end %>
+    <% if @recipe.total_time_min %><strong>Total:</strong> <%= @recipe.total_time_display %><% end %>
+  </p>
+<% end %>
+
+<% if @recipe.source_url.present? %>
+  <p><small>Source: <a href="<%= @recipe.source_url %>" target="_blank"><%= @recipe.source_url %></a></small></p>
+<% end %>
+
+<% if @recipe.description.present? %>
+  <p><%= @recipe.description %></p>
+<% end %>
+
+<%# Actions %>
+<p>
+  <a href="/recipes/<%= @recipe.id %>/cook">Follow this recipe (adjust servings)</a>
+  <% if in_book %>
+    &nbsp;|&nbsp;
+    <% if @entry.entry_type == "owned" %>
+      This is your recipe
+    <% elsif @entry.entry_type == "saved" %>
+      Saved to your book
+    <% elsif @entry.entry_type == "duplicated" %>
+      In your book (your version)
+    <% end %>
+  <% end %>
+  <% unless in_book %>
+    &nbsp;|&nbsp;
+    <form action="/recipes/<%= @recipe.id %>/save_to_book" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit">Save to My Book</button>
+    </form>
+  <% end %>
+  <% unless is_creator %>
+    &nbsp;|&nbsp;
+    <form action="/recipes/<%= @recipe.id %>/duplicate" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit">Duplicate to My Book</button>
+    </form>
+  <% end %>
+  <% if is_creator %>
+    &nbsp;|&nbsp;
+    <form action="/recipes/<%= @recipe.id %>/duplicate" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit">Duplicate (create modified version)</button>
+    </form>
+    &nbsp;|&nbsp;
+    <a href="/delete_recipe/<%= @recipe.id %>" data-turbo-confirm="Delete this recipe permanently?">Delete Recipe</a>
+  <% end %>
+</p>
+
+<%# Add to list %>
+<% if in_book && @lists.any? %>
+  <form action="" method="post" style="display:inline">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <label>Add to list:</label>
+    <select name="list_id" id="list_select">
+      <% @lists.each do |list| %>
+        <option value="<%= list.id %>"><%= list.name %></option>
+      <% end %>
+    </select>
+    <button type="submit" id="add_to_list_btn" onclick="this.form.action='/recipe_lists/' + document.getElementById('list_select').value + '/add/<%= @recipe.id %>'">Add to List</button>
   </form>
-</article>
+<% end %>
 
 <hr>
+
+<%# Cooked + Rating (if in book) %>
+<% if @entry %>
+  <h3>My Status</h3>
+  <% if @entry.has_cooked %>
+    <p>You have cooked this. ✓</p>
+  <% else %>
+    <p>Not cooked yet.</p>
+    <form action="/book_entry/<%= @entry.id %>/mark_cooked" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit">Mark as Cooked</button>
+    </form>
+  <% end %>
+  <form action="/book_entry/<%= @entry.id %>/rate" method="post">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <label>My Rating:</label>
+    <% (1..5).each do |n| %>
+      <label>
+        <input type="radio" name="star_rating" value="<%= n %>" <%= "checked" if @entry.star_rating == n %>>
+        <%= n %>★
+      </label>
+    <% end %>
+    <button type="submit">Save Rating</button>
+  </form>
+<% end %>
+
+<hr>
+
+<%# Nutrition %>
+<% if @recipe.est_calories_per_serving.present? %>
+  <h3>Nutrition (per serving)</h3>
+  <table border="1" cellpadding="4">
+    <tr>
+      <th>Calories</th><th>Carbs</th><th>Fat</th><th>Protein</th><th>Fibre</th>
+    </tr>
+    <tr>
+      <td><%= @recipe.est_calories_per_serving.round(1) %> kcal</td>
+      <td><%= @recipe.est_carbs_g_per_serving.round(1) %>g</td>
+      <td><%= @recipe.est_fat_g_per_serving.round(1) %>g</td>
+      <td><%= @recipe.est_protein_g_per_serving.round(1) %>g</td>
+      <td><%= @recipe.est_fibre_g_per_serving.round(1) %>g</td>
+    </tr>
+  </table>
+  <small>Estimated <%= @recipe.nutrition_estimated_at ? time_ago_in_words(@recipe.nutrition_estimated_at) + " ago" : "" %></small>
+<% end %>
+<% if is_creator %>
+  <form action="/recipes/<%= @recipe.id %>/estimate_nutrition" method="post" style="display:inline">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <button type="submit"><%= @recipe.est_calories_per_serving.present? ? "Re-estimate Nutrition (AI)" : "Estimate Nutrition (AI)" %></button>
+  </form>
+<% end %>
+
+<hr>
+
+<%# Ingredients %>
+<h3>Ingredients</h3>
+<% if @components.any? %>
+  <% @components.each do |comp| %>
+    <h4><%= comp.name %></h4>
+    <ul>
+      <% comp.recipe_ingredients.each do |ing| %>
+        <li>
+          <%= ing.display_quantity %>
+          <% if is_creator %>
+            <small>
+              <a href="/delete_recipe_ingredient/<%= ing.id %>">remove</a>
+            </small>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
+<% if @loose_ingredients.any? %>
+  <ul>
+    <% @loose_ingredients.each do |ing| %>
+      <li>
+        <%= ing.display_quantity %>
+        <% if is_creator %>
+          <small><a href="/delete_recipe_ingredient/<%= ing.id %>">remove</a></small>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+<% if is_creator %>
+  <details>
+    <summary>+ Add Ingredient</summary>
+    <form action="/insert_recipe_ingredient" method="post">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
+      <input type="text" name="query_quantity" placeholder="Qty" style="width:60px;">
+      <input type="text" name="query_unit" placeholder="Unit" style="width:80px;">
+      <input type="text" name="query_name" placeholder="Ingredient name" style="width:200px;" required>
+      <% if @recipe.recipe_components.any? %>
+        <select name="query_component_id">
+          <option value="">No component</option>
+          <% @recipe.recipe_components.each do |c| %>
+            <option value="<%= c.id %>"><%= c.name %></option>
+          <% end %>
+        </select>
+      <% end %>
+      <button type="submit">Add</button>
+    </form>
+  </details>
+<% end %>
+
+<hr>
+
+<%# Steps %>
+<h3>Instructions</h3>
+<% if @components.any? %>
+  <% @components.each do |comp| %>
+    <% next if comp.recipe_steps.empty? %>
+    <h4><%= comp.name %></h4>
+    <ol>
+      <% comp.recipe_steps.each do |step| %>
+        <li>
+          <%= step.instruction %>
+          <% if is_creator %>
+            <small><a href="/delete_recipe_step/<%= step.id %>">remove</a></small>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+<% end %>
+<% if @loose_steps.any? %>
+  <ol start="<%= (@components.sum { |c| c.recipe_steps.count } + 1) %>">
+    <% @loose_steps.each do |step| %>
+      <li>
+        <%= step.instruction %>
+        <% if is_creator %>
+          <small><a href="/delete_recipe_step/<%= step.id %>">remove</a></small>
+        <% end %>
+      </li>
+    <% end %>
+  </ol>
+<% end %>
+<% if is_creator %>
+  <details>
+    <summary>+ Add Step</summary>
+    <form action="/insert_recipe_step" method="post">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
+      <input type="number" name="query_step_number" placeholder="Step #" style="width:60px;" value="<%= (@recipe.recipe_steps.maximum(:step_number) || 0) + 1 %>">
+      <% if @recipe.recipe_components.any? %>
+        <select name="query_component_id">
+          <option value="">No component</option>
+          <% @recipe.recipe_components.each do |c| %>
+            <option value="<%= c.id %>"><%= c.name %></option>
+          <% end %>
+        </select>
+      <% end %>
+      <textarea name="query_instruction" rows="2" style="width:400px;" placeholder="Instruction..." required></textarea>
+      <button type="submit">Add Step</button>
+    </form>
+  </details>
+
+  <details>
+    <summary>+ Add Component (section grouping)</summary>
+    <form action="/insert_recipe_component" method="post">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
+      <input type="text" name="query_name" placeholder="e.g. Sauce, Dough, Filling" required style="width:200px;">
+      <button type="submit">Add Component</button>
+    </form>
+  </details>
+<% end %>
+
+<hr>
+
+<%# Edit recipe (creator only) %>
+<% if is_creator %>
+  <details>
+    <summary>Edit Recipe Details</summary>
+    <form action="/modify_recipe/<%= @recipe.id %>" method="post">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div>
+        <label>Title</label><br>
+        <input type="text" name="query_title" value="<%= @recipe.title %>" style="width:400px;" required>
+      </div>
+      <div>
+        <label>Description</label><br>
+        <textarea name="query_description" rows="3" style="width:400px;"><%= @recipe.description %></textarea>
+      </div>
+      <div>
+        <label>Photo URL</label><br>
+        <input type="url" name="query_photo_url" value="<%= @recipe.photo_url %>" style="width:400px;">
+      </div>
+      <div>
+        <label>Source URL</label><br>
+        <input type="url" name="query_source_url" value="<%= @recipe.source_url %>" style="width:400px;">
+      </div>
+      <div>
+        <label>Meal Type</label><br>
+        <select name="query_meal_type">
+          <option value="">-- Select --</option>
+          <% Recipe::MEAL_TYPES.each do |t| %>
+            <option value="<%= t %>" <%= "selected" if @recipe.meal_type == t %>><%= t.humanize %></option>
+          <% end %>
+        </select>
+      </div>
+      <div>
+        <label>Diet Type</label><br>
+        <select name="query_diet_type">
+          <option value="">-- Select --</option>
+          <% Recipe::DIET_TYPES.each do |t| %>
+            <option value="<%= t %>" <%= "selected" if @recipe.diet_type == t %>><%= t.humanize %></option>
+          <% end %>
+        </select>
+      </div>
+      <div>
+        <label>Servings</label>
+        <input type="number" name="query_base_servings" value="<%= @recipe.base_servings %>" style="width:70px;">
+        &nbsp;
+        <label>Prep (min)</label>
+        <input type="number" name="query_prep_time_min" value="<%= @recipe.prep_time_min %>" style="width:70px;">
+        &nbsp;
+        <label>Cook (min)</label>
+        <input type="number" name="query_cook_time_min" value="<%= @recipe.cook_time_min %>" style="width:70px;">
+        &nbsp;
+        <label>Total (min)</label>
+        <input type="number" name="query_total_time_min" value="<%= @recipe.total_time_min %>" style="width:70px;">
+      </div>
+      <br>
+      <button type="submit">Save Changes</button>
+    </form>
+  </details>
+<% end %>
+
+<hr>
+
+<%# Notes (private to current user) %>
+<h3>My Notes</h3>
+<% if @notes.any? %>
+  <% @notes.each do |note| %>
+    <blockquote>
+      <%= note.note_text %>
+      <small>
+        — <a href="/delete_recipe_note/<%= note.id %>">delete</a>
+      </small>
+    </blockquote>
+  <% end %>
+<% end %>
+<form action="/insert_recipe_note" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
+  <textarea name="query_note_text" rows="2" style="width:400px;" placeholder="Add a private note…"></textarea>
+  <button type="submit">Add Note</button>
+</form>
+
+<hr>
+
+<%# Comments %>
+<h3>Comments</h3>
+<% @comments.each do |comment| %>
+  <p>
+    <strong><a href="/users/<%= comment.user_id %>"><%= comment.user.display %></a></strong>:
+    <%= comment.comment_text %>
+    <small>— <%= time_ago_in_words(comment.created_at) %> ago</small>
+    <% if comment.user_id == current_user.id || is_creator %>
+      <a href="/delete_recipe_comment/<%= comment.id %>">delete</a>
+    <% end %>
+  </p>
+<% end %>
+<% if is_creator || current_user.friend?(@recipe.creator) %>
+  <form action="/insert_recipe_comment" method="post">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <input type="hidden" name="query_recipe_id" value="<%= @recipe.id %>">
+    <input type="text" name="query_comment_text" placeholder="Add a comment…" style="width:350px;" required>
+    <button type="submit">Comment</button>
+  </form>
+<% end %>

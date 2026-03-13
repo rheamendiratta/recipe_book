@@ -1,0 +1,97 @@
+<h1>New Recipe</h1>
+<p><a href="/my_book">Back to My Book</a></p>
+
+<% if @errors %>
+  <% @errors.each do |e| %><p style="color:red"><%= e %></p><% end %>
+<% end %>
+
+<form action="/insert_recipe" method="post" data-controller="recipe-form">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+  <h3>Basic Info</h3>
+  <div>
+    <label>Title *</label><br>
+    <input type="text" name="query_title" required style="width:400px;">
+  </div>
+  <div>
+    <label>Description</label><br>
+    <textarea name="query_description" rows="3" style="width:400px;"></textarea>
+  </div>
+  <div>
+    <label>Photo URL</label><br>
+    <input type="url" name="query_photo_url" style="width:400px;">
+  </div>
+  <div>
+    <label>Source URL (if from a website)</label><br>
+    <input type="url" name="query_source_url" style="width:400px;">
+  </div>
+
+  <h3>Meal Details</h3>
+  <div>
+    <label>Meal Type</label><br>
+    <select name="query_meal_type">
+      <option value="">-- Select --</option>
+      <% Recipe::MEAL_TYPES.each do |t| %>
+        <option value="<%= t %>"><%= t.humanize %></option>
+      <% end %>
+    </select>
+  </div>
+  <div>
+    <label>Diet Type</label><br>
+    <select name="query_diet_type">
+      <option value="">-- Select --</option>
+      <% Recipe::DIET_TYPES.each do |t| %>
+        <option value="<%= t %>"><%= t.humanize %></option>
+      <% end %>
+    </select>
+  </div>
+  <div>
+    <label>Servings</label><br>
+    <input type="number" name="query_base_servings" min="1" style="width:80px;">
+  </div>
+  <div>
+    <label>Prep time (min)</label>
+    <input type="number" name="query_prep_time_min" min="0" style="width:80px;">
+    &nbsp;
+    <label>Cook time (min)</label>
+    <input type="number" name="query_cook_time_min" min="0" style="width:80px;">
+    &nbsp;
+    <label>Total time (min)</label>
+    <input type="number" name="query_total_time_min" min="0" style="width:80px;">
+  </div>
+
+  <h3>Ingredients</h3>
+  <p><small>Leave blank rows empty — they will be ignored.</small></p>
+  <table>
+    <thead><tr><th>Qty</th><th>Unit</th><th>Ingredient Name</th><th></th></tr></thead>
+    <tbody data-recipe-form-target="ingredientRows">
+      <% 5.times do |i| %>
+        <tr>
+          <td><input type="text" name="ingredient_qty_<%= i+1 %>" style="width:60px;"></td>
+          <td><input type="text" name="ingredient_unit_<%= i+1 %>" style="width:80px;" placeholder="g, cup, tsp…"></td>
+          <td><input type="text" name="ingredient_name_<%= i+1 %>" style="width:250px;"></td>
+          <td><button type="button" data-action="click->recipe-form#removeRow">Remove</button></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <button type="button" data-action="click->recipe-form#addIngredientRow">+ Add Ingredient</button>
+
+  <h3>Steps</h3>
+  <table>
+    <thead><tr><th>#</th><th>Instruction</th><th></th></tr></thead>
+    <tbody data-recipe-form-target="stepRows">
+      <% 3.times do |i| %>
+        <tr>
+          <td><%= i+1 %></td>
+          <td><textarea name="step_instruction_<%= i+1 %>" rows="2" style="width:450px;"></textarea></td>
+          <td><button type="button" data-action="click->recipe-form#removeRow">Remove</button></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <button type="button" data-action="click->recipe-form#addStepRow">+ Add Step</button>
+
+  <br><br>
+  <button type="submit">Create Recipe</button>
+</form>

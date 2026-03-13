@@ -1,0 +1,29 @@
+<h1>Share a Food Photo</h1>
+<p><a href="/feed">← Feed</a></p>
+
+<form action="/insert_food_post" method="post" enctype="multipart/form-data">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <div>
+    <label>Upload Photo</label><br>
+    <input type="file" name="photo" accept="image/*">
+  </div>
+  <div>
+    <label>Or Photo URL</label><br>
+    <input type="url" name="query_photo_url" style="width:400px;" placeholder="https://...">
+  </div>
+  <div>
+    <label>Caption *</label><br>
+    <textarea name="query_caption" rows="3" style="width:400px;" required placeholder="What did you cook?"></textarea>
+  </div>
+  <div>
+    <label>Link to a recipe (optional)</label><br>
+    <select name="query_recipe_id">
+      <option value="">-- No recipe --</option>
+      <% @my_book_recipes.each do |recipe| %>
+        <option value="<%= recipe.id %>"><%= recipe.title %></option>
+      <% end %>
+    </select>
+  </div>
+  <br>
+  <button type="submit">Share</button>
+</form>

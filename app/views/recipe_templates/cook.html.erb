@@ -1,0 +1,69 @@
+<h1>Cooking: <%= @recipe.title %></h1>
+<p><a href="/recipes/<%= @recipe.id %>">← Back to Recipe</a></p>
+
+<form action="/recipes/<%= @recipe.id %>/cook" method="get">
+  <label><strong>Servings:</strong></label>
+  <input type="number" name="servings" value="<%= @serving_size.to_i %>" min="1" style="width:60px;" onchange="this.form.submit()">
+  <small>(base: <%= @recipe.base_servings %> servings)</small>
+</form>
+
+<h3>Ingredients</h3>
+<% scale = @ratio %>
+
+<% if @recipe.recipe_components.any? %>
+  <% @components.each do |comp| %>
+    <% next if comp.recipe_ingredients.empty? %>
+    <h4><%= comp.name %></h4>
+    <ul>
+      <% comp.recipe_ingredients.each do |ing| %>
+        <li>
+          <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
+            <strong><%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %></strong>
+            <%= ing.unit %>
+          <% end %>
+          <%= ing.name %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
+
+<% if @loose_ingredients.any? %>
+  <ul>
+    <% @loose_ingredients.each do |ing| %>
+      <li>
+        <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
+          <strong><%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %></strong>
+          <%= ing.unit %>
+        <% end %>
+        <%= ing.name %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<hr>
+
+<h3>Instructions</h3>
+<% all_steps = @recipe.recipe_steps.order(:step_number) %>
+<ol>
+  <% all_steps.each do |step| %>
+    <li><%= step.instruction %></li>
+  <% end %>
+</ol>
+
+<% if @recipe.est_calories_per_serving.present? %>
+  <hr>
+  <h3>Nutrition for <%= @serving_size.to_i %> serving<%= "s" if @serving_size != 1 %></h3>
+  <table border="1" cellpadding="4">
+    <tr><th>Calories</th><th>Carbs</th><th>Fat</th><th>Protein</th><th>Fibre</th></tr>
+    <tr>
+      <td><%= (@recipe.est_calories_per_serving * @serving_size).round(1) %> kcal</td>
+      <td><%= (@recipe.est_carbs_g_per_serving * @serving_size).round(1) %>g</td>
+      <td><%= (@recipe.est_fat_g_per_serving * @serving_size).round(1) %>g</td>
+      <td><%= (@recipe.est_protein_g_per_serving * @serving_size).round(1) %>g</td>
+      <td><%= (@recipe.est_fibre_g_per_serving * @serving_size).round(1) %>g</td>
+    </tr>
+  </table>
+  <small>Per serving: <%= @recipe.est_calories_per_serving.round(1) %> kcal</small>
+<% end %>

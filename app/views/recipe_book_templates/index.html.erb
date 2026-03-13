@@ -1,0 +1,56 @@
+<h1>My Recipe Book</h1>
+
+<form action="/my_book/search" method="get">
+  <label>Search by ingredient:</label>
+  <input type="text" name="query" value="<%= @query %>">
+  &nbsp;
+  <label>Max total time:</label>
+  <select name="duration">
+    <option value="">Any</option>
+    <option value="15" <%= "selected" if @duration == 15 %>>15 min or less</option>
+    <option value="30" <%= "selected" if @duration == 30 %>>30 min or less</option>
+    <option value="45" <%= "selected" if @duration == 45 %>>45 min or less</option>
+  </select>
+  <button type="submit">Search</button>
+  <% if @query.present? || @duration.to_i > 0 %>
+    <a href="/my_book">Clear</a>
+  <% end %>
+</form>
+
+<hr>
+
+<% if @recipes.empty? %>
+  <p>No recipes found. <a href="/recipes/new">Create one</a> or <a href="/recipes/import">import one</a>.</p>
+<% end %>
+
+<% @recipes.each do |recipe| %>
+  <% entry = @entry_map[recipe.id] %>
+  <article style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+    <% if recipe.photo_url.present? %>
+      <img src="<%= recipe.photo_url %>" style="max-width:150px; float:right;" alt="photo">
+    <% end %>
+    <h3><a href="/recipes/<%= recipe.id %>"><%= recipe.title %></a></h3>
+    <p>
+      <small>
+        <% if entry %>
+          <% if entry.entry_type == "owned" %>My recipe<% elsif entry.entry_type == "saved" %>Saved from <a href="/users/<%= recipe.creator_id %>"><%= recipe.creator.display %></a><% elsif entry.entry_type == "duplicated" %>Duplicated from <a href="/users/<%= recipe.creator_id %>"><%= recipe.creator.display %></a><% end %>
+        <% end %>
+        <% if recipe.total_time_min.present? %> &bull; <%= recipe.total_time_display %><% end %>
+        <% if recipe.meal_type.present? %> &bull; <%= recipe.meal_type_label %><% end %>
+        <% if recipe.diet_type.present? %> &bull; <%= recipe.diet_type_label %><% end %>
+      </small>
+    </p>
+    <% if entry %>
+      <p>
+        <% if entry.has_cooked %>
+          Cooked ✓
+          <% if entry.star_rating %>
+            &bull; Rating: <%= "★" * entry.star_rating %><%= "☆" * (5 - entry.star_rating) %>
+          <% end %>
+        <% else %>
+          Not cooked yet
+        <% end %>
+      </p>
+    <% end %>
+  </article>
+<% end %>

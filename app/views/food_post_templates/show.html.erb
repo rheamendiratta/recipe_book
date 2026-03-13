@@ -1,111 +1,54 @@
-<h1>
-  Food post #<%= @the_food_post.id %> details
-</h1>
+<p><a href="/feed">← Feed</a></p>
 
 <article>
-  <div>
-    <a href="/food_posts">
-      Go back
-    </a>
-  </div>
+  <p>
+    <strong><a href="/users/<%= @post.user_id %>"><%= @post.user.display %></a></strong>
+    <small>— <%= time_ago_in_words(@post.created_at) %> ago</small>
+  </p>
 
-  <div>
-    <a href="/delete_food_post/<%= @the_food_post.id %>">
-      Delete food post
-    </a>
-  </div>
-  <dl>
-    <dt>
-      User
-    </dt>
-    <dd>
-      <%= @the_food_post.user_id %>
-    </dd>
+  <% if @post.photo.attached? %>
+    <%= image_tag url_for(@post.photo), style: "max-width:600px; display:block;" %>
+  <% elsif @post.photo_url.present? %>
+    <img src="<%= @post.photo_url %>" style="max-width:600px; display:block;" alt="food photo">
+  <% end %>
 
-    <dt>
-      Recipe
-    </dt>
-    <dd>
-      <%= @the_food_post.recipe_id %>
-    </dd>
+  <p><%= @post.caption %></p>
 
-    <dt>
-      Photo url
-    </dt>
-    <dd>
-      <%= @the_food_post.photo_url %>
-    </dd>
+  <% if @post.recipe.present? %>
+    <p>Recipe: <a href="/recipes/<%= @post.recipe_id %>"><%= @post.recipe.title %></a></p>
+  <% end %>
 
-    <dt>
-      Caption
-    </dt>
-    <dd>
-      <%= @the_food_post.caption %>
-    </dd>
+  <p>
+    <form action="/toggle_post_like/<%= @post.id %>" method="post" style="display:inline">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <button type="submit"><%= @liked ? "Unlike" : "Like" %></button>
+    </form>
+    <%= @like_count %> like<%= "s" if @like_count != 1 %>
+  </p>
 
-    <dt>
-      Created at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_food_post.created_at) %> ago
-    </dd>
-
-    <dt>
-      Updated at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_food_post.updated_at) %> ago
-    </dd>
-  </dl>
+  <% if @post.user_id == current_user.id %>
+    <p>
+      <a href="/delete_food_post/<%= @post.id %>" data-turbo-confirm="Delete this post?">Delete post</a>
+    </p>
+  <% end %>
 </article>
 
 <hr>
+<h3>Comments (<%= @comments.count %>)</h3>
+<% @comments.each do |comment| %>
+  <p>
+    <strong><a href="/users/<%= comment.user_id %>"><%= comment.user.display %></a></strong>:
+    <%= comment.comment_text %>
+    <small>— <%= time_ago_in_words(comment.created_at) %> ago</small>
+    <% if comment.user_id == current_user.id || @post.user_id == current_user.id %>
+      <a href="/delete_post_comment/<%= comment.id %>">delete</a>
+    <% end %>
+  </p>
+<% end %>
 
-
-<article>
-  <header>
-    <h2>
-      Edit food post
-    </h2>
-  </header>
-
-  <form action="/modify_food_post/<%= @the_food_post.id %>"  method="post" >
-    <div>
-      <label for="user_id_box">
-        User
-      </label>
-
-      <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_food_post.user_id %>">
-    </div>
-
-    <div>
-      <label for="recipe_id_box">
-        Recipe
-      </label>
-
-      <input type="text" id="recipe_id_box" name="query_recipe_id" value="<%= @the_food_post.recipe_id %>">
-    </div>
-
-    <div>
-      <label for="photo_url_box">
-        Photo url
-      </label>
-
-      <input type="text" id="photo_url_box" name="query_photo_url" value="<%= @the_food_post.photo_url %>">
-    </div>
-
-    <div>
-      <label for="caption_box">
-        Caption
-      </label>
-
-      <input type="text" id="caption_box" name="query_caption" value="<%= @the_food_post.caption %>">
-    </div>
-
-    <button type="submit">
-      Update food post
-    </button>
-  </form>
-</article>
-
-<hr>
+<form action="/insert_post_comment" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <input type="hidden" name="query_post_id" value="<%= @post.id %>">
+  <input type="text" name="query_comment_text" placeholder="Add a comment…" style="width:350px;" required>
+  <button type="submit">Comment</button>
+</form>

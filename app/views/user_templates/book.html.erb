@@ -1,0 +1,24 @@
+<h1><%= @user.display %>'s Recipe Book</h1>
+<p><a href="/users/<%= @user.id %>">← Back to profile</a></p>
+
+<% if @recipes.empty? %>
+  <p>No recipes in their book yet.</p>
+<% else %>
+  <% @recipes.each do |recipe| %>
+    <article style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+      <h3><a href="/recipes/<%= recipe.id %>"><%= recipe.title %></a></h3>
+      <p>
+        <small>
+          By <a href="/users/<%= recipe.creator_id %>"><%= recipe.creator.display %></a>
+          <% if recipe.total_time_min %> &bull; <%= recipe.total_time_display %><% end %>
+          <% if recipe.meal_type %> &bull; <%= recipe.meal_type_label %><% end %>
+          <% if recipe.diet_type %> &bull; <%= recipe.diet_type_label %><% end %>
+        </small>
+      </p>
+      <% entry = @entries.find { |e| e.recipe_id == recipe.id } %>
+      <% if entry&.has_cooked && entry.star_rating %>
+        <small>Rated: <%= "★" * entry.star_rating %><%= "☆" * (5 - entry.star_rating) %></small>
+      <% end %>
+    </article>
+  <% end %>
+<% end %>
