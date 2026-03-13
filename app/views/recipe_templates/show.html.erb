@@ -208,18 +208,19 @@
 <h3>Instructions</h3>
 <% if @components.any? %>
   <% @components.each do |comp| %>
-    <% next if comp.recipe_steps.empty? %>
-    <h4><%= comp.name %></h4>
-    <ol>
-      <% comp.recipe_steps.each do |step| %>
-        <li>
-          <%= step.instruction %>
-          <% if is_creator %>
-            <small><a href="/delete_recipe_step/<%= step.id %>">remove</a></small>
-          <% end %>
-        </li>
-      <% end %>
-    </ol>
+    <% if comp.recipe_steps.any? %>
+      <h4><%= comp.name %></h4>
+      <ol>
+        <% comp.recipe_steps.each do |step| %>
+          <li>
+            <%= step.instruction %>
+            <% if is_creator %>
+              <small><a href="/delete_recipe_step/<%= step.id %>">remove</a></small>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    <% end %>
   <% end %>
 <% end %>
 <% if @loose_steps.any? %>

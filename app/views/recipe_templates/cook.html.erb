@@ -12,19 +12,20 @@
 
 <% if @recipe.recipe_components.any? %>
   <% @components.each do |comp| %>
-    <% next if comp.recipe_ingredients.empty? %>
-    <h4><%= comp.name %></h4>
-    <ul>
-      <% comp.recipe_ingredients.each do |ing| %>
-        <li>
-          <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
-            <strong><%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %></strong>
-            <%= ing.unit %>
-          <% end %>
-          <%= ing.name %>
-        </li>
-      <% end %>
-    </ul>
+    <% if comp.recipe_ingredients.any? %>
+      <h4><%= comp.name %></h4>
+      <ul>
+        <% comp.recipe_ingredients.each do |ing| %>
+          <li>
+            <% if ing.quantity.present? && ing.quantity.to_f > 0 %>
+              <strong><%= (ing.quantity.to_f * scale).round(2).to_s.sub(/\.?0+$/, '') %></strong>
+              <%= ing.unit %>
+            <% end %>
+            <%= ing.name %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
 <% end %>
 
