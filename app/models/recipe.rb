@@ -26,4 +26,14 @@
 #  original_recipe_id        :integer
 #
 class Recipe < ApplicationRecord
+
+  has_many  :recipe_book_entries, class_name: "RecipeBookEntry", foreign_key: "recipe_id", dependent: :destroy
+  has_many  :recipe_notes, class_name: "RecipeNote", foreign_key: "recipe_id", dependent: :destroy
+  has_many  :recipe_comments, class_name: "RecipeComment", foreign_key: "recipe_id", dependent: :destroy
+  has_many  :recipe_components, class_name: "RecipeComponent", foreign_key: "recipe_id", dependent: :destroy
+  has_many  :recipe_ingredients, class_name: "RecipeIngredient", foreign_key: "recipe_id", dependent: :destroy
+  has_many  :recipe_list_items, class_name: "RecipeListItem", foreign_key: "recipe_id", dependent: :destroy
+  has_many  :recipe_steps, class_name: "RecipeStep", foreign_key: "recipe_id", dependent: :destroy
+  has_many  :food_posts, class_name: "FoodPost", foreign_key: "recipe_id", dependent: :nullify
+  belongs_to :creator, required: true, class_name: "User", foreign_key: "creator_id", counter_cache: true
 end

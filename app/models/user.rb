@@ -24,4 +24,15 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  has_many  :recipes, class_name: "Recipe", foreign_key: "creator_id", dependent: :destroy
+  has_many  :sent_friend_requests, class_name: "Friendship", foreign_key: "requester_id", dependent: :destroy
+  has_many  :received_friend_requests, class_name: "Friendship", foreign_key: "addressee_id", dependent: :destroy
+  has_many  :recipe_lists, class_name: "RecipeList", foreign_key: "user_id", dependent: :destroy
+  has_many  :recipe_book_entries, class_name: "RecipeBookEntry", foreign_key: "user_id", dependent: :destroy
+  has_many  :recipe_notes, class_name: "RecipeNote", foreign_key: "user_id", dependent: :destroy
+  has_many  :recipe_comments, class_name: "RecipeComment", foreign_key: "user_id", dependent: :destroy
+  has_many  :food_posts, class_name: "FoodPost", foreign_key: "user_id", dependent: :destroy
+  has_many  :post_comments, class_name: "PostComment", foreign_key: "user_id", dependent: :destroy
+  has_many  :post_likes, class_name: "PostLike", foreign_key: "user_id", dependent: :destroy
 end
