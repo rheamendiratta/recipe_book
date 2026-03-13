@@ -197,6 +197,204 @@ RecipeNote.create!(recipe: dal, user: alice, note_text: "Priya's recommendation:
 RecipeComment.create!(recipe: dal, user: alice, comment_text: "Made this last night, absolutely delicious. The tadka makes it!")
 RecipeComment.create!(recipe: pasta, user: bob, comment_text: "Classic recipe. I used guanciale and it was even better.")
 
+puts "Creating three more users..."
+
+ravi = User.create!(
+  email: "ravi@example.com",
+  password: "password",
+  display_name: "Ravi"
+)
+
+mei = User.create!(
+  email: "mei@example.com",
+  password: "password",
+  display_name: "Mei"
+)
+
+leila = User.create!(
+  email: "leila@example.com",
+  password: "password",
+  display_name: "Leila"
+)
+
+# Friendships for new users
+Friendship.create!(requester: ravi, addressee: alice, status: "accepted")
+Friendship.create!(requester: ravi, addressee: priya, status: "accepted")
+Friendship.create!(requester: mei, addressee: bob, status: "accepted")
+Friendship.create!(requester: mei, addressee: ravi, status: "accepted")
+Friendship.create!(requester: leila, addressee: alice, status: "accepted")
+Friendship.create!(requester: leila, addressee: mei, status: "pending")
+Friendship.create!(requester: bob, addressee: leila, status: "pending")
+
+puts "Creating recipes for new users..."
+
+# Ravi's chicken biryani
+biryani = Recipe.create!(
+  creator: ravi,
+  title: "Chicken Dum Biryani",
+  description: "Fragrant basmati rice slow-cooked with spiced chicken, caramelised onions, and saffron. Classic Hyderabadi style.",
+  source_type: "manual",
+  base_servings: 5,
+  prep_time_min: 30,
+  cook_time_min: 60,
+  total_time_min: 90,
+  diet_type: "non_vegetarian",
+  meal_type: "main",
+  est_calories_per_serving: 520.0,
+  est_carbs_g_per_serving: 62.0,
+  est_fat_g_per_serving: 18.0,
+  est_protein_g_per_serving: 30.0,
+  est_fibre_g_per_serving: 3.0,
+  nutrition_estimated_at: Time.current
+)
+
+biryani_rice = RecipeComponent.create!(recipe: biryani, name: "Rice", sort_order: 1)
+biryani_chicken = RecipeComponent.create!(recipe: biryani, name: "Chicken Marinade", sort_order: 2)
+biryani_assembly = RecipeComponent.create!(recipe: biryani, name: "Dum Assembly", sort_order: 3)
+
+RecipeIngredient.create!([
+  { recipe: biryani, component: biryani_rice, name: "basmati rice", quantity: "500", unit: "g", sort_order: 1 },
+  { recipe: biryani, component: biryani_rice, name: "whole spices (bay leaves, cardamom, cloves)", quantity: "1", unit: "tbsp mix", sort_order: 2 },
+  { recipe: biryani, component: biryani_chicken, name: "chicken thighs (bone-in)", quantity: "800", unit: "g", sort_order: 3 },
+  { recipe: biryani, component: biryani_chicken, name: "Greek yogurt", quantity: "200", unit: "g", sort_order: 4 },
+  { recipe: biryani, component: biryani_chicken, name: "biryani masala", quantity: "2", unit: "tbsp", sort_order: 5 },
+  { recipe: biryani, component: biryani_chicken, name: "ginger-garlic paste", quantity: "2", unit: "tbsp", sort_order: 6 },
+  { recipe: biryani, component: biryani_chicken, name: "chilli powder", quantity: "1", unit: "tsp", sort_order: 7 },
+  { recipe: biryani, component: biryani_assembly, name: "fried onions (birista)", quantity: "2", unit: "large handfuls", sort_order: 8 },
+  { recipe: biryani, component: biryani_assembly, name: "saffron in warm milk", quantity: "2", unit: "tbsp", sort_order: 9 },
+  { recipe: biryani, component: biryani_assembly, name: "ghee", quantity: "3", unit: "tbsp", sort_order: 10 }
+])
+
+RecipeStep.create!([
+  { recipe: biryani, component: biryani_chicken, step_number: 1, instruction: "Mix chicken with yogurt, biryani masala, ginger-garlic paste, chilli powder, and salt. Marinate at least 2 hours." },
+  { recipe: biryani, component: biryani_rice, step_number: 2, instruction: "Soak basmati for 30 minutes. Parboil with whole spices and salt until 70% cooked. Drain." },
+  { recipe: biryani, component: biryani_assembly, step_number: 3, instruction: "Layer marinated chicken at the bottom of a heavy pot. Top with half the rice." },
+  { recipe: biryani, component: biryani_assembly, step_number: 4, instruction: "Scatter fried onions, drizzle saffron milk and ghee. Add remaining rice." },
+  { recipe: biryani, step_number: 5, instruction: "Seal pot with dough or foil. Cook on high 5 min, then lowest heat for 35 minutes. Rest 10 min before opening." }
+])
+
+# Mei's tofu stir-fry
+stirfry = Recipe.create!(
+  creator: mei,
+  title: "Sesame Tofu & Broccoli Stir-fry",
+  description: "Crispy pan-fried tofu and tender-crisp broccoli in a sticky sesame-ginger sauce. Ready in 20 minutes.",
+  source_type: "manual",
+  base_servings: 2,
+  prep_time_min: 10,
+  cook_time_min: 15,
+  total_time_min: 25,
+  diet_type: "vegetarian",
+  meal_type: "main",
+  est_calories_per_serving: 310.0,
+  est_carbs_g_per_serving: 28.0,
+  est_fat_g_per_serving: 16.0,
+  est_protein_g_per_serving: 18.0,
+  est_fibre_g_per_serving: 5.0,
+  nutrition_estimated_at: Time.current
+)
+
+RecipeIngredient.create!([
+  { recipe: stirfry, name: "firm tofu", quantity: "400", unit: "g", sort_order: 1 },
+  { recipe: stirfry, name: "broccoli florets", quantity: "300", unit: "g", sort_order: 2 },
+  { recipe: stirfry, name: "soy sauce", quantity: "3", unit: "tbsp", sort_order: 3 },
+  { recipe: stirfry, name: "sesame oil", quantity: "1", unit: "tbsp", sort_order: 4 },
+  { recipe: stirfry, name: "fresh ginger", quantity: "1", unit: "inch piece", sort_order: 5 },
+  { recipe: stirfry, name: "garlic cloves", quantity: "3", unit: nil, sort_order: 6 },
+  { recipe: stirfry, name: "honey or maple syrup", quantity: "1", unit: "tbsp", sort_order: 7 },
+  { recipe: stirfry, name: "cornflour", quantity: "1", unit: "tsp", sort_order: 8 },
+  { recipe: stirfry, name: "sesame seeds", quantity: "1", unit: "tbsp", sort_order: 9 }
+])
+
+RecipeStep.create!([
+  { recipe: stirfry, step_number: 1, instruction: "Press tofu dry, cube it, toss in cornflour. Pan-fry in a little oil until golden on all sides. Set aside." },
+  { recipe: stirfry, step_number: 2, instruction: "Blanch broccoli in boiling water for 2 minutes. Drain." },
+  { recipe: stirfry, step_number: 3, instruction: "Whisk soy sauce, sesame oil, ginger, garlic, and honey into a sauce." },
+  { recipe: stirfry, step_number: 4, instruction: "Return pan to high heat. Add broccoli and tofu, pour over sauce, toss 2 minutes until glossy. Top with sesame seeds." }
+])
+
+# Leila's lamb kofta
+kofta = Recipe.create!(
+  creator: leila,
+  title: "Lamb Kofta with Minted Yogurt",
+  description: "Spiced ground lamb skewers served with a cool mint yogurt dip and warm flatbreads.",
+  source_type: "manual",
+  base_servings: 4,
+  prep_time_min: 20,
+  cook_time_min: 15,
+  total_time_min: 35,
+  diet_type: "non_vegetarian",
+  meal_type: "main",
+  est_calories_per_serving: 450.0,
+  est_carbs_g_per_serving: 12.0,
+  est_fat_g_per_serving: 28.0,
+  est_protein_g_per_serving: 38.0,
+  est_fibre_g_per_serving: 2.0,
+  nutrition_estimated_at: Time.current
+)
+
+kofta_meat = RecipeComponent.create!(recipe: kofta, name: "Kofta", sort_order: 1)
+kofta_dip = RecipeComponent.create!(recipe: kofta, name: "Minted Yogurt", sort_order: 2)
+
+RecipeIngredient.create!([
+  { recipe: kofta, component: kofta_meat, name: "ground lamb", quantity: "600", unit: "g", sort_order: 1 },
+  { recipe: kofta, component: kofta_meat, name: "onion (grated)", quantity: "1", unit: "small", sort_order: 2 },
+  { recipe: kofta, component: kofta_meat, name: "cumin", quantity: "1.5", unit: "tsp", sort_order: 3 },
+  { recipe: kofta, component: kofta_meat, name: "coriander (ground)", quantity: "1", unit: "tsp", sort_order: 4 },
+  { recipe: kofta, component: kofta_meat, name: "cinnamon", quantity: "0.5", unit: "tsp", sort_order: 5 },
+  { recipe: kofta, component: kofta_meat, name: "fresh parsley", quantity: "1", unit: "handful", sort_order: 6 },
+  { recipe: kofta, component: kofta_dip, name: "Greek yogurt", quantity: "200", unit: "g", sort_order: 7 },
+  { recipe: kofta, component: kofta_dip, name: "fresh mint", quantity: "1", unit: "handful", sort_order: 8 },
+  { recipe: kofta, component: kofta_dip, name: "lemon juice", quantity: "1", unit: "tbsp", sort_order: 9 }
+])
+
+RecipeStep.create!([
+  { recipe: kofta, component: kofta_meat, step_number: 1, instruction: "Combine lamb, grated onion, cumin, coriander, cinnamon, parsley, salt and pepper. Mix well and refrigerate 15 minutes." },
+  { recipe: kofta, component: kofta_dip, step_number: 2, instruction: "Blitz yogurt, mint, and lemon juice together. Season with salt." },
+  { recipe: kofta, component: kofta_meat, step_number: 3, instruction: "Shape meat around skewers into 10cm sausage shapes." },
+  { recipe: kofta, component: kofta_meat, step_number: 4, instruction: "Grill or pan-fry over high heat, turning, until cooked through — about 10 minutes total. Serve with yogurt dip." }
+])
+
+puts "Setting up book entries for new users..."
+
+# Ravi saves Alice's pasta and Priya's dal
+pasta.save_to_book_for(ravi)
+ravi_pasta_entry = RecipeBookEntry.find_by(user_id: ravi.id, recipe_id: pasta.id)
+ravi_pasta_entry.update!(has_cooked: true, star_rating: 5)
+
+dal.save_to_book_for(ravi)
+ravi_biryani_entry = RecipeBookEntry.find_by(user_id: ravi.id, recipe_id: biryani.id)
+ravi_biryani_entry.update!(has_cooked: true, star_rating: 5)
+
+# Mei saves Bob's soup
+soup.save_to_book_for(mei)
+mei_soup_entry = RecipeBookEntry.find_by(user_id: mei.id, recipe_id: soup.id)
+mei_soup_entry.update!(has_cooked: true, star_rating: 4)
+
+# Leila duplicates Ravi's biryani
+biryani.duplicate_for(leila)
+leila_stirfry_entry = RecipeBookEntry.find_by(user_id: leila.id, recipe_id: kofta.id)
+leila_stirfry_entry.update!(has_cooked: true, star_rating: 4)
+
+puts "Creating recipe lists for new users..."
+
+ravi_list = RecipeList.create!(user: ravi, name: "Indian Classics")
+RecipeListItem.create!(list: ravi_list, recipe: biryani)
+RecipeListItem.create!(list: ravi_list, recipe: dal)
+
+mei_list = RecipeList.create!(user: mei, name: "Quick Weeknight Meals")
+RecipeListItem.create!(list: mei_list, recipe: stirfry)
+RecipeListItem.create!(list: mei_list, recipe: soup)
+
+puts "Creating notes and comments for new users..."
+
+RecipeNote.create!(recipe: biryani, user: ravi, note_text: "Use aged basmati if you can find it — the grains stay separate much better during dum.")
+RecipeNote.create!(recipe: kofta, user: leila, note_text: "Can be prepped the night before and kept in the fridge. Actually improves with resting!")
+
+RecipeComment.create!(recipe: biryani, user: priya, comment_text: "Ravi this brings back memories of Hyderabad! Perfect.")
+RecipeComment.create!(recipe: biryani, user: alice, comment_text: "Made this for a dinner party and everyone asked for the recipe.")
+RecipeComment.create!(recipe: stirfry, user: mei, comment_text: "Great for meal prep — holds up well in the fridge for 2 days.")
+RecipeComment.create!(recipe: kofta, user: ravi, comment_text: "The minted yogurt is what makes this dish. Don't skip it!")
+
 puts "Creating food posts..."
 
 post1 = FoodPost.create!(
@@ -230,6 +428,39 @@ PostLike.create!(post: post2, user: alice)
 PostComment.create!(post: post1, user: bob, comment_text: "That looks incredible, Alice!")
 PostComment.create!(post: post3, user: alice, comment_text: "Priya this is making me hungry right now")
 PostComment.create!(post: post2, user: priya, comment_text: "Perfect soup weather!")
+
+post4 = FoodPost.create!(
+  user: ravi,
+  recipe: biryani,
+  photo_url: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800",
+  caption: "Dum biryani sealed and resting. The anticipation is the hardest part."
+)
+
+post5 = FoodPost.create!(
+  user: mei,
+  recipe: stirfry,
+  photo_url: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800",
+  caption: "20-minute tofu stir-fry. Proof that weeknight dinners don't have to be boring."
+)
+
+post6 = FoodPost.create!(
+  user: leila,
+  recipe: kofta,
+  photo_url: "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=800",
+  caption: "Kofta off the grill. The mint yogurt makes everything better."
+)
+
+PostLike.create!(post: post4, user: priya)
+PostLike.create!(post: post4, user: alice)
+PostLike.create!(post: post4, user: mei)
+PostLike.create!(post: post5, user: ravi)
+PostLike.create!(post: post5, user: bob)
+PostLike.create!(post: post6, user: alice)
+PostLike.create!(post: post6, user: ravi)
+
+PostComment.create!(post: post4, user: priya, comment_text: "Ravi the colour on that rice is gorgeous!")
+PostComment.create!(post: post5, user: bob, comment_text: "Saving this for next week. Looks so fresh.")
+PostComment.create!(post: post6, user: alice, comment_text: "Need this in my life immediately.")
 
 puts "\nDone! Seeded:"
 puts "  #{User.count} users"
