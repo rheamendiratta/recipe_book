@@ -10,9 +10,128 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_13_202311) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_13_183910) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "food_posts", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "recipe_id"
+    t.string "photo_url"
+    t.text "caption"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.integer "requester_id"
+    t.integer "addressee_id"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "post_comments", force: :cascade do |t|
+    t.integer "post_id"
+    t.integer "user_id"
+    t.text "comment_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "post_likes", force: :cascade do |t|
+    t.integer "post_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_book_entries", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "recipe_id"
+    t.string "entry_type"
+    t.boolean "has_cooked"
+    t.integer "star_rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_comments", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "recipe_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_components", force: :cascade do |t|
+    t.integer "recipe_id"
+    t.string "name"
+    t.integer "sort_order"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_ingredients", force: :cascade do |t|
+    t.integer "recipe_id"
+    t.integer "component_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_list_items", force: :cascade do |t|
+    t.integer "list_id"
+    t.integer "recipe_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_lists", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_notes", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "recipe_id"
+    t.text "note_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_steps", force: :cascade do |t|
+    t.integer "recipe_id"
+    t.integer "component_id"
+    t.integer "step_number"
+    t.text "instruction"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipes", force: :cascade do |t|
+    t.integer "creator_id"
+    t.integer "original_recipe_id"
+    t.string "title"
+    t.text "description"
+    t.string "photo_url"
+    t.string "source_url"
+    t.string "source_type"
+    t.integer "base_servings"
+    t.integer "prep_time_min"
+    t.integer "cook_time_min"
+    t.integer "total_time_min"
+    t.string "diet_type"
+    t.string "meal_type"
+    t.float "est_calories_per_serving"
+    t.float "est_carbs_g_per_serving"
+    t.float "est_fat_g_per_serving"
+    t.float "est_protein_g_per_serving"
+    t.float "est_fibre_g_per_serving"
+    t.datetime "nutrition_estimated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
@@ -154,6 +273,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_202311) do
     t.index ["expires_at"], name: "index_solid_queue_semaphores_on_expires_at"
     t.index ["key", "value"], name: "index_solid_queue_semaphores_on_key_and_value"
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "display_name"
+    t.string "profile_photo_url"
+    t.integer "recipes_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
