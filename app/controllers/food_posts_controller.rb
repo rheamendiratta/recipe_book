@@ -1,60 +1,51 @@
 class FoodPostsController < ApplicationController
-  def index
-    matching_food_posts = FoodPost.all
-
-    @list_of_food_posts = matching_food_posts.order({ :created_at => :desc })
-
-    render({ :template => "food_post_templates/index" })
-  end
-
-  def show
-    the_id = params.fetch("path_id")
-
-    matching_food_posts = FoodPost.where({ :id => the_id })
-
-    @the_food_post = matching_food_posts.at(0)
-
-    render({ :template => "food_post_templates/show" })
+  def new
+    @my_book_recipes = current_user.recipe_book_entries.includes(:recipe).map(&:recipe).compact
+    render template: "food_post_templates/new"
   end
 
   def create
-    the_food_post = FoodPost.new
-    the_food_post.user_id = params.fetch("query_user_id")
-    the_food_post.recipe_id = params.fetch("query_recipe_id")
-    the_food_post.photo_url = params.fetch("query_photo_url")
-    the_food_post.caption = params.fetch("query_caption")
-
-    if the_food_post.valid?
-      the_food_post.save
-      redirect_to("/food_posts", { :notice => "Food post created successfully." })
-    else
-      redirect_to("/food_posts", { :alert => the_food_post.errors.full_messages.to_sentence })
+    post = FoodPost.new(
+      user_id: current_user.id,
+      recipe_id: params[:query_recipe_id].presence,
+      caption: params[:query_caption]
+    )
+    if params[:photo].present?
+      post.photo.attach(params[:photo])
+    elsif params[:query_photo_url].present?
+      post.photo_url = params[:query_photo_url]
     end
+    if post.save
+      redirect_to "/feed", notice: "Post shared!"
+    else
+      redirect_to "/posts/new", alert: post.errors.full_messages.to_sentence
+    end
+  end
+
+  def show
+    @post = FoodPost.find(params[:path_id])
+    unless @post.user_id == current_user.id || current_user.friend?(@post.user)
+      redirect_to "/feed", alert: "Not authorized." and return
+    end
+    @comments = @post.post_comments.includes(:user).order(created_at: :asc)
+    @liked = @post.post_likes.exists?(user_id: current_user.id)
+    @like_count = @post.post_likes.count
+    render template: "food_post_templates/show"
   end
 
   def update
-    the_id = params.fetch("path_id")
-    the_food_post = FoodPost.where({ :id => the_id }).at(0)
-
-    the_food_post.user_id = params.fetch("query_user_id")
-    the_food_post.recipe_id = params.fetch("query_recipe_id")
-    the_food_post.photo_url = params.fetch("query_photo_url")
-    the_food_post.caption = params.fetch("query_caption")
-
-    if the_food_post.valid?
-      the_food_post.save
-      redirect_to("/food_posts/#{the_food_post.id}", { :notice => "Food post updated successfully." } )
-    else
-      redirect_to("/food_posts/#{the_food_post.id}", { :alert => the_food_post.errors.full_messages.to_sentence })
-    end
+    post = FoodPost.find(params[:path_id])
+    require_ownership(post)
+    return if performed?
+    post.update(caption: params[:query_caption])
+    redirect_to "/posts/#{post.id}", notice: "Post updated."
   end
 
   def destroy
-    the_id = params.fetch("path_id")
-    the_food_post = FoodPost.where({ :id => the_id }).at(0)
-
-    the_food_post.destroy
-
-    redirect_to("/food_posts", { :notice => "Food post deleted successfully." } )
+    post = FoodPost.find(params[:path_id])
+    require_ownership(post)
+    return if performed?
+    post.destroy
+    redirect_to "/feed", notice: "Post deleted."
   end
 end

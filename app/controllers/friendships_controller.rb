@@ -1,58 +1,39 @@
 class FriendshipsController < ApplicationController
   def index
-    matching_friendships = Friendship.all
-
-    @list_of_friendships = matching_friendships.order({ :created_at => :desc })
-
-    render({ :template => "friendship_templates/index" })
-  end
-
-  def show
-    the_id = params.fetch("path_id")
-
-    matching_friendships = Friendship.where({ :id => the_id })
-
-    @the_friendship = matching_friendships.at(0)
-
-    render({ :template => "friendship_templates/show" })
+    @friends = current_user.friends
+    @pending_received = current_user.received_friend_requests.pending.includes(:requester)
+    @pending_sent = current_user.sent_friend_requests.pending.includes(:addressee)
+    render template: "friendship_templates/index"
   end
 
   def create
-    the_friendship = Friendship.new
-    the_friendship.requester_id = params.fetch("query_requester_id")
-    the_friendship.addressee_id = params.fetch("query_addressee_id")
-    the_friendship.status = params.fetch("query_status")
-
-    if the_friendship.valid?
-      the_friendship.save
-      redirect_to("/friendships", { :notice => "Friendship created successfully." })
-    else
-      redirect_to("/friendships", { :alert => the_friendship.errors.full_messages.to_sentence })
+    addressee = User.find(params[:path_id])
+    if addressee == current_user
+      redirect_to "/friends", alert: "You can't friend yourself." and return
     end
+    existing = current_user.friendship_with(addressee)
+    if existing
+      redirect_to "/friends", alert: "Friend request already exists." and return
+    end
+    Friendship.create!(requester_id: current_user.id, addressee_id: addressee.id, status: "pending")
+    redirect_to "/users/#{addressee.id}", notice: "Friend request sent."
   end
 
-  def update
-    the_id = params.fetch("path_id")
-    the_friendship = Friendship.where({ :id => the_id }).at(0)
-
-    the_friendship.requester_id = params.fetch("query_requester_id")
-    the_friendship.addressee_id = params.fetch("query_addressee_id")
-    the_friendship.status = params.fetch("query_status")
-
-    if the_friendship.valid?
-      the_friendship.save
-      redirect_to("/friendships/#{the_friendship.id}", { :notice => "Friendship updated successfully." } )
-    else
-      redirect_to("/friendships/#{the_friendship.id}", { :alert => the_friendship.errors.full_messages.to_sentence })
-    end
+  def accept
+    friendship = current_user.received_friend_requests.find(params[:path_id])
+    friendship.accept!
+    redirect_to "/friends", notice: "Friend request accepted."
   end
 
-  def destroy
-    the_id = params.fetch("path_id")
-    the_friendship = Friendship.where({ :id => the_id }).at(0)
+  def decline
+    friendship = current_user.received_friend_requests.find(params[:path_id])
+    friendship.decline!
+    redirect_to "/friends", notice: "Friend request declined."
+  end
 
-    the_friendship.destroy
-
-    redirect_to("/friendships", { :notice => "Friendship deleted successfully." } )
+  def withdraw
+    friendship = current_user.sent_friend_requests.find(params[:path_id])
+    friendship.destroy
+    redirect_to "/friends", notice: "Friend request withdrawn."
   end
 end

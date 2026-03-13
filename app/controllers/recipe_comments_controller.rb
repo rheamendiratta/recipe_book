@@ -1,56 +1,25 @@
 class RecipeCommentsController < ApplicationController
-  def index
-    matching_recipe_comments = RecipeComment.all
-
-    @list_of_recipe_comments = matching_recipe_comments.order({ :created_at => :desc })
-
-    render({ :template => "recipe_comment_templates/index" })
-  end
-
-  def show
-    the_id = params.fetch("path_id")
-
-    matching_recipe_comments = RecipeComment.where({ :id => the_id })
-
-    @the_recipe_comment = matching_recipe_comments.at(0)
-
-    render({ :template => "recipe_comment_templates/show" })
-  end
-
   def create
-    the_recipe_comment = RecipeComment.new
-    the_recipe_comment.user_id = params.fetch("query_user_id")
-    the_recipe_comment.recipe_id = params.fetch("query_recipe_id")
-
-    if the_recipe_comment.valid?
-      the_recipe_comment.save
-      redirect_to("/recipe_comments", { :notice => "Recipe comment created successfully." })
-    else
-      redirect_to("/recipe_comments", { :alert => the_recipe_comment.errors.full_messages.to_sentence })
+    recipe = Recipe.find(params[:query_recipe_id])
+    # Can comment if it's your recipe, or you're friends with the creator
+    unless recipe.creator_id == current_user.id || current_user.friend?(recipe.creator)
+      redirect_to "/recipes/#{recipe.id}", alert: "You can only comment on friends' recipes." and return
     end
-  end
-
-  def update
-    the_id = params.fetch("path_id")
-    the_recipe_comment = RecipeComment.where({ :id => the_id }).at(0)
-
-    the_recipe_comment.user_id = params.fetch("query_user_id")
-    the_recipe_comment.recipe_id = params.fetch("query_recipe_id")
-
-    if the_recipe_comment.valid?
-      the_recipe_comment.save
-      redirect_to("/recipe_comments/#{the_recipe_comment.id}", { :notice => "Recipe comment updated successfully." } )
+    comment = recipe.recipe_comments.new(user_id: current_user.id, comment_text: params[:query_comment_text])
+    if comment.save
+      redirect_to "/recipes/#{recipe.id}", notice: "Comment added."
     else
-      redirect_to("/recipe_comments/#{the_recipe_comment.id}", { :alert => the_recipe_comment.errors.full_messages.to_sentence })
+      redirect_to "/recipes/#{recipe.id}", alert: comment.errors.full_messages.to_sentence
     end
   end
 
   def destroy
-    the_id = params.fetch("path_id")
-    the_recipe_comment = RecipeComment.where({ :id => the_id }).at(0)
-
-    the_recipe_comment.destroy
-
-    redirect_to("/recipe_comments", { :notice => "Recipe comment deleted successfully." } )
+    comment = RecipeComment.find(params[:path_id])
+    unless comment.user_id == current_user.id || comment.recipe.creator_id == current_user.id
+      redirect_to "/recipes/#{comment.recipe_id}", alert: "Not authorized." and return
+    end
+    recipe_id = comment.recipe_id
+    comment.destroy
+    redirect_to "/recipes/#{recipe_id}", notice: "Comment deleted."
   end
 end
