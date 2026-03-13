@@ -76,6 +76,9 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     amazing_print (2.0.0)
     annotaterb (4.14.0)
+    anthropic (1.23.0)
+      cgi
+      connection_pool
     appdev_support (0.2.1)
       tabulo
     base64 (0.2.0)
@@ -479,6 +482,7 @@ PLATFORMS
 DEPENDENCIES
   amazing_print
   annotaterb
+  anthropic
   appdev_support
   better_errors
   binding_of_caller (~> 2.0.0)
@@ -495,6 +499,7 @@ DEPENDENCIES
   htmlbeautifier
   http
   importmap-rails
+  nokogiri
   pg (~> 1.1)
   propshaft
   pry (~> 0.16)
