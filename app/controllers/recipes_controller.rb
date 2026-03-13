@@ -12,6 +12,7 @@ class RecipesController < ApplicationController
     @recipe.source_type = "manual" if @recipe.source_url.blank?
 
     if @recipe.save
+      @recipe.photo.attach(params[:photo]) if params[:photo].present?
       save_ingredients_and_steps(@recipe, params)
       redirect_to "/recipes/#{@recipe.id}", notice: "Recipe created successfully."
     else
@@ -88,6 +89,7 @@ class RecipesController < ApplicationController
 
   def update
     if @recipe.update(recipe_params)
+      @recipe.photo.attach(params[:photo]) if params[:photo].present?
       redirect_to "/recipes/#{@recipe.id}", notice: "Recipe updated."
     else
       @errors = @recipe.errors.full_messages

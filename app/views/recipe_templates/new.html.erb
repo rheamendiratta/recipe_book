@@ -5,7 +5,7 @@
   <% @errors.each do |e| %><p style="color:red"><%= e %></p><% end %>
 <% end %>
 
-<form action="/insert_recipe" method="post" data-controller="recipe-form">
+<form action="/insert_recipe" method="post" enctype="multipart/form-data" data-controller="recipe-form">
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
   <h3>Basic Info</h3>
@@ -18,8 +18,8 @@
     <textarea name="query_description" rows="3" style="width:400px;"></textarea>
   </div>
   <div>
-    <label>Photo URL</label><br>
-    <input type="url" name="query_photo_url" style="width:400px;">
+    <label>Photo</label><br>
+    <input type="file" name="photo" accept="image/*">
   </div>
   <div>
     <label>Source URL (if from a website)</label><br>

@@ -7,7 +7,9 @@
 <% is_creator = @recipe.creator_id == current_user.id %>
 <% in_book = @entry.present? %>
 
-<% if @recipe.photo_url.present? %>
+<% if @recipe.photo.attached? %>
+  <%= image_tag url_for(@recipe.photo), style: "max-width:500px; display:block;" %>
+<% elsif @recipe.photo_url.present? %>
   <img src="<%= @recipe.photo_url %>" style="max-width:500px; display:block;" alt="recipe photo">
 <% end %>
 
@@ -272,7 +274,7 @@
 <% if is_creator %>
   <details>
     <summary>Edit Recipe Details</summary>
-    <form action="/modify_recipe/<%= @recipe.id %>" method="post">
+    <form action="/modify_recipe/<%= @recipe.id %>" method="post" enctype="multipart/form-data">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
       <div>
         <label>Title</label><br>
@@ -283,8 +285,14 @@
         <textarea name="query_description" rows="3" style="width:400px;"><%= @recipe.description %></textarea>
       </div>
       <div>
-        <label>Photo URL</label><br>
-        <input type="url" name="query_photo_url" value="<%= @recipe.photo_url %>" style="width:400px;">
+        <label>Photo</label><br>
+        <% if @recipe.photo.attached? %>
+          <%= image_tag url_for(@recipe.photo), style: "max-width:100px;" %>
+          <br>
+        <% elsif @recipe.photo_url.present? %>
+          <img src="<%= @recipe.photo_url %>" style="max-width:100px;" alt="current photo"><br>
+        <% end %>
+        <input type="file" name="photo" accept="image/*">
       </div>
       <div>
         <label>Source URL</label><br>
